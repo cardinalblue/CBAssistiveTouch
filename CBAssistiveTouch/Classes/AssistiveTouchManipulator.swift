@@ -50,10 +50,15 @@ class AssistiveTouchManipulator {
         self.prevPoint = currentPoint
     }
 
+
+    /// Align item to edge by checking item's quardrant and comparing the distance of x and y axis.
+    ///
+    /// - Parameter bounding: Target bounding
     func align(to bounding: CGRect) {
         var newFrame = itemFrame
         let center = CGPoint(x: itemFrame.midX, y: itemFrame.midY)
 
+        // Alignment
         let quadrant = Quadrant(point: center, bounding: bounding)
         switch quadrant {
         case .I:
@@ -81,6 +86,19 @@ class AssistiveTouchManipulator {
                 newFrame = newFrame.aligned(to: bounding, at: .bottom)
             }
         }
+
+        // Validation x-axis
+        if newFrame.width < bounding.width {
+            newFrame.origin.x = max(newFrame.origin.x, bounding.minX)
+            newFrame.origin.x = min(newFrame.origin.x, bounding.maxX - newFrame.size.width)
+        }
+
+        // Validation y-axis
+        if newFrame.height < bounding.height {
+            newFrame.origin.y = max(newFrame.origin.y, bounding.minY)
+            newFrame.origin.y = min(newFrame.origin.y, bounding.maxY - newFrame.size.height)
+        }
+
         self.itemFrame = newFrame
     }
 }
