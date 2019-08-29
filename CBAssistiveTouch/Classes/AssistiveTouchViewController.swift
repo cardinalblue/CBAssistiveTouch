@@ -14,9 +14,27 @@ class AssistiveTouchViewController: UIViewController {
     unowned let assistiveTouchWindow: UIWindow
     let layout: AssitiveTouchLayout
 
+    private lazy var contentView: UIView = {
+        let v = UIView(frame: CGRect(x: 0, y: 0, width: 60, height: 60))
+        let darkEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+        darkEffectView.autoresizingMask = [UIView.AutoresizingMask.flexibleHeight,
+                                           UIView.AutoresizingMask.flexibleWidth,
+                                           UIView.AutoresizingMask.flexibleTopMargin,
+                                           UIView.AutoresizingMask.flexibleBottomMargin,
+                                           UIView.AutoresizingMask.flexibleLeftMargin,
+                                           UIView.AutoresizingMask.flexibleRightMargin]
+        darkEffectView.frame = v.bounds
+        darkEffectView.layer.cornerRadius = 14
+        darkEffectView.clipsToBounds = true
+        v.addSubview(darkEffectView)
+
+        return v
+    }()
+
+    private var lastWindowPosition: CGPoint?
+
     private lazy var assistiveTouchView: UIView = {
         let v = UIView(frame: CGRect(x: 0, y: 0, width: 60, height: 60))
-        v.backgroundColor = UIColor.green
         return v
     }()
 
@@ -38,15 +56,22 @@ class AssistiveTouchViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.addSubview(assistiveTouchView)
+
+        contentView.addSubview(assistiveTouchView)
+        view.addSubview(contentView)
 
         setupGestures()
     }
 
     private func setupGestures() {
         let paneGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePanGesture(recognizer:)))
-        assistiveTouchView.addGestureRecognizer(paneGesture)
+        assistiveTouchWindow.addGestureRecognizer(paneGesture)
+
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(handleTapGesture(recognizer:)))
+        assistiveTouchWindow.addGestureRecognizer(tapGesture)
     }
+
+    // MARK: Gesture handlers
 
     @objc private func handlePanGesture(recognizer: UIPanGestureRecognizer) {
         switch recognizer.state {
@@ -57,7 +82,7 @@ class AssistiveTouchViewController: UIViewController {
             manipulator = AssistiveTouchManipulator(itemFrame: presentingView.frame,
                                                     bounding: bounding)
             manipulator?.onChange = { [unowned self] frame in
-                self.assistiveTouchView.frame = frame
+                self.presentingView.frame = frame
             }
             let location = recognizer.location(in: view)
             let touch = Touch(identifier: "pan", point: location)
@@ -80,28 +105,95 @@ class AssistiveTouchViewController: UIViewController {
         }
     }
 
+    @objc private func handleTapGesture(recognizer: UITapGestureRecognizer) {
+        if presentedViewController != nil {
+            dismissContent()
+        } else {
+            presentContent()
+        }
+    }
+
+    private var contentSize: CGSize {
+        if let presented = presentedViewController {
+            return presented.preferredContentSize
+        }
+        return layout.assitiveTouchSize
+    }
+
+    // MARK:
+
+    private func sizeToFitContent(size: CGSize, at center: CGPoint) {
+        let frame = CGRect(x: 0, y: 0, width: size.width, height: size.height)
+
+        // NOTE: Change winodw's frame will aslo change the viewController's frame.
+        // Change to assistive touch coordinate space, move to assistive touch position.
+        assistiveTouchWindow.frame = frame
+        assistiveTouchWindow.center = center
+        presentingView.frame = frame
+
+        let bounding = UIScreen.main.bounds.inset(by: layout.safeAreaInsets)
+                                           .insetBy(dx: layout.margin, dy: layout.margin)
+        let manipulator = AssistiveTouchManipulator(itemFrame: assistiveTouchWindow.frame,
+                                                    bounding: bounding)
+        manipulator.onChange = { [unowned self] frame in
+            self.assistiveTouchWindow.frame = frame
+        }
+        manipulator.align(to: bounding)
+
+    }
+
+    private func presentContent() {
+        lastWindowPosition = self.assistiveTouchWindow.center
+
+        let viewController = UIViewController()
+        viewController.preferredContentSize = CGSize(width: 200, height: 300)
+        viewController.view.backgroundColor = UIColor.yellow
+        preferredContentSize = viewController.preferredContentSize
+        present(viewController, animated: false, completion: nil)
+
+        UIView.animate(withDuration: layout.animationDuration) {
+            self.sizeToFitContent(size: self.contentSize, at: self.assistiveTouchWindow.center)
+        }
+    }
+
+    private func dismissContent() {
+        UIView.animate(withDuration: layout.animationDuration, animations: {
+            self.sizeToFitContent(size: self.contentView.bounds.size,
+                                  at: self.lastWindowPosition ?? self.assistiveTouchWindow.center)
+        }, completion: { _ in
+            self.dismiss(animated: false) {
+                self.sizeToFitContent(size: self.contentSize, at: self.assistiveTouchWindow.center)
+            }
+        })
+    }
+
+    // MARK: Dragging
+
+    var presentingView: UIView {
+        if let presented = presentedViewController {
+            return presented.view
+        } else {
+            return contentView
+        }
+    }
+
     private func beginDragging() {
         let frame = UIScreen.main.bounds
 
         // We are going to change window frame to cover entire screen, and the coordinate space will be changed.
         // To keep the assistive touch at same position, we have to covert the current position to new cooridnate space.
         let referenceCoordinateSpace: UICoordinateSpace = UIView(frame: frame)
-        let newCenter = view.convert(assistiveTouchView.center, to: referenceCoordinateSpace)
+        let newCenter = presentingView.superview!.convert(presentingView.center, to: referenceCoordinateSpace)
 
         // NOTE: Change winodw's frame will aslo change the viewController's frame.
         assistiveTouchWindow.frame = frame
-        assistiveTouchView.center = newCenter
+        presentingView.frame = CGRect(x: 0, y: 0, width: contentSize.width, height: contentSize.height)
+        presentingView.center = newCenter
     }
 
     private func endDragging() {
-        let frame = CGRect(x: 0, y: 0, width: layout.assitiveTouchSize.width, height: layout.assitiveTouchSize.height)
-
-        // NOTE: Change winodw's frame will aslo change the viewController's frame.
-        // Change to assistive touch coordinate space, move to assistive touch position.
-        assistiveTouchWindow.frame = frame
-        assistiveTouchWindow.center = assistiveTouchView.center
-        assistiveTouchView.frame = frame
+        sizeToFitContent(size: contentSize, at: presentingView.center)
+        lastWindowPosition = assistiveTouchWindow.center
     }
-
 
 }
