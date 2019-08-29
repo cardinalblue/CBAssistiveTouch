@@ -11,37 +11,31 @@ import Foundation
 
 class AssistiveTouchManipulator {
 
-    var assistiveTouchFrame: CGRect {
+    var itemFrame: CGRect {
         didSet {
-            onChange?(assistiveTouchFrame)
+            onChange?(itemFrame)
         }
     }
     let bounding: CGRect
-    let layout: AssitiveTouchLayout
 
     private var prevPoint: CGPoint?
     private var center: CGPoint {
         get {
-            return CGPoint(x: assistiveTouchFrame.midX, y: assistiveTouchFrame.midY)
+            return CGPoint(x: itemFrame.midX, y: itemFrame.midY)
         }
         set {
-            var newFrame = assistiveTouchFrame
+            var newFrame = itemFrame
             newFrame.origin.x = newValue.x - newFrame.width / 2
             newFrame.origin.y = newValue.y - newFrame.height / 2
-            self.assistiveTouchFrame = newFrame
-            print("new frame \(newFrame)")
+            self.itemFrame = newFrame
         }
     }
-    private lazy var layoutBounding: CGRect = {
-        bounding.insetBy(dx: layout.margin, dy: layout.margin)
-    }()
 
     var onChange: ((CGRect) -> Void)?
 
-    init(assistiveTouchFrame: CGRect, bounding: CGRect, layout: AssitiveTouchLayout) {
-        self.assistiveTouchFrame = assistiveTouchFrame
+    init(itemFrame: CGRect, bounding: CGRect) {
+        self.itemFrame = itemFrame
         self.bounding = bounding
-        self.layout = layout
     }
 
     private func move(with touches: Set<Touch>) {
@@ -56,9 +50,9 @@ class AssistiveTouchManipulator {
         self.prevPoint = currentPoint
     }
 
-    private func align(to bounding: CGRect) {
-        var newFrame = assistiveTouchFrame
-        let center = CGPoint(x: assistiveTouchFrame.midX, y: assistiveTouchFrame.midY)
+    func align(to bounding: CGRect) {
+        var newFrame = itemFrame
+        let center = CGPoint(x: itemFrame.midX, y: itemFrame.midY)
 
         let quadrant = Quadrant(point: center, bounding: bounding)
         switch quadrant {
@@ -87,7 +81,7 @@ class AssistiveTouchManipulator {
                 newFrame = newFrame.aligned(to: bounding, at: .bottom)
             }
         }
-        self.assistiveTouchFrame = newFrame
+        self.itemFrame = newFrame
     }
 }
 
@@ -107,12 +101,12 @@ extension AssistiveTouchManipulator: TouchHandling {
 
     func touchesCancelled(_ touches: Set<Touch>) {
         move(with: touches)
-        align(to: layoutBounding)
+        align(to: bounding)
     }
 
     func touchesEnded(_ touches: Set<Touch>) {
         move(with: touches)
-        align(to: layoutBounding)
+        align(to: bounding)
     }
 
 }

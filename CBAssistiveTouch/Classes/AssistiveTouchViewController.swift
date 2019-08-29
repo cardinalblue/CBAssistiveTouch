@@ -53,9 +53,9 @@ class AssistiveTouchViewController: UIViewController {
         case .began:
             beginDragging()
             let bounding = assistiveTouchWindow.bounds.inset(by: assistiveTouchWindow.safeAreaInsets)
-            manipulator = AssistiveTouchManipulator(assistiveTouchFrame: assistiveTouchView.frame,
-                                                    bounding: bounding,
-                                                    layout: layout)
+                                                      .insetBy(dx: layout.margin, dy: layout.margin)
+            manipulator = AssistiveTouchManipulator(itemFrame: presentingView.frame,
+                                                    bounding: bounding)
             manipulator?.onChange = { [unowned self] frame in
                 self.assistiveTouchView.frame = frame
             }
