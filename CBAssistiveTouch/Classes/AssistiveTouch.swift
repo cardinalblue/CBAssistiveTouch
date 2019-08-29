@@ -11,7 +11,7 @@ import Foundation
 
 public class AssistiveTouch {
 
-    let application: UIApplication
+    let applicationWindow: UIWindow?
 
     private lazy var window: UIWindow = {
         let frame = CGRect(x: 0, y: 0,
@@ -28,13 +28,14 @@ public class AssistiveTouch {
 
     private let layout: AssitiveTouchLayout
 
-    public init(application: UIApplication = UIApplication.shared, layout: AssitiveTouchLayout) {
-        self.application = application
+    public init(applicationWindow: UIWindow?, layout: AssitiveTouchLayout) {
+        self.applicationWindow = applicationWindow
         self.layout = layout
     }
 
-    public convenience init(application: UIApplication) {
-        self.init(application: application, layout: DefaultAssitiveTouchLayout())
+    public convenience init(applicationWindow: UIWindow?) {
+        self.init(applicationWindow: applicationWindow,
+                  layout: DefaultAssitiveTouchLayout(keyWindow: applicationWindow))
     }
 
     public func show() {
@@ -42,9 +43,8 @@ public class AssistiveTouch {
     }
 
     private func maskVisibleWindow() {
-        let keyWindow = application.keyWindow
         window.makeKeyAndVisible()
-        keyWindow?.makeKey()
+        applicationWindow?.makeKey()
     }
 
 }

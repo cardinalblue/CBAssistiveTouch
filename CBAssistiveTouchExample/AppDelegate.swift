@@ -15,7 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     private lazy var assistiveTouch: AssistiveTouch = {
-        return AssistiveTouch(application: UIApplication.shared)
+        return AssistiveTouch(applicationWindow: self.window)
     }()
 
     func application(_ application: UIApplication,

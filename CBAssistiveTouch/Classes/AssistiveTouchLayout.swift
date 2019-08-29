@@ -10,6 +10,7 @@ import Foundation
 
 public protocol AssitiveTouchLayout {
 
+    var safeAreaInsets: UIEdgeInsets { get }
     var margin: CGFloat { get }
     var animationDuration: TimeInterval { get }
     var assitiveTouchSize: CGSize { get }
@@ -18,6 +19,8 @@ public protocol AssitiveTouchLayout {
 }
 
 struct DefaultAssitiveTouchLayout: AssitiveTouchLayout {
+
+    private let keyWindow: UIWindow?
 
     var animationDuration: TimeInterval {
         return 0.25
@@ -36,5 +39,12 @@ struct DefaultAssitiveTouchLayout: AssitiveTouchLayout {
         return CGPoint(x: screen.width - assitiveTouchSize.width / 2 - margin, y: screen.midY)
     }
 
+    var safeAreaInsets: UIEdgeInsets {
+        return keyWindow?.safeAreaInsets ?? UIEdgeInsets.zero
+    }
+
+    init(keyWindow: UIWindow?) {
+        self.keyWindow = keyWindow
+    }
 
 }
