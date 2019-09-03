@@ -15,11 +15,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     private lazy var assistiveTouch: AssistiveTouch = {
-        return AssistiveTouch(applicationWindow: self.window)
+        let contentViewController = ViewController()
+        return AssistiveTouch(applicationWindow: self.window, contentViewController: contentViewController)
     }()
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+
+        let rootVC = UIViewController()
+        rootVC.view.backgroundColor = UIColor.white
+
+        window = UIWindow(frame: UIScreen.main.bounds)
+        window?.rootViewController = rootVC
+        window?.makeKeyAndVisible()
+
         assistiveTouch.show()
         return true
     }

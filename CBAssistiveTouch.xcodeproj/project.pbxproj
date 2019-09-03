@@ -17,7 +17,6 @@
 		FBC036C2231680E300763CDE /* AssistiveTouchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC036C1231680E300763CDE /* AssistiveTouchViewController.swift */; };
 		FBC036CA231681FB00763CDE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC036C9231681FB00763CDE /* AppDelegate.swift */; };
 		FBC036CC231681FB00763CDE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC036CB231681FB00763CDE /* ViewController.swift */; };
-		FBC036CF231681FB00763CDE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FBC036CD231681FB00763CDE /* Main.storyboard */; };
 		FBC036D1231681FD00763CDE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FBC036D0231681FD00763CDE /* Assets.xcassets */; };
 		FBC036D4231681FD00763CDE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FBC036D2231681FD00763CDE /* LaunchScreen.storyboard */; };
 		FBC036DF231681FD00763CDE /* CBAssistiveTouchExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC036DE231681FD00763CDE /* CBAssistiveTouchExampleTests.swift */; };
@@ -80,7 +79,6 @@
 		FBC036C7231681FB00763CDE /* CBAssistiveTouchExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CBAssistiveTouchExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBC036C9231681FB00763CDE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		FBC036CB231681FB00763CDE /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		FBC036CE231681FB00763CDE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		FBC036D0231681FD00763CDE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FBC036D3231681FD00763CDE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FBC036D5231681FD00763CDE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -193,7 +191,6 @@
 			children = (
 				FBC036C9231681FB00763CDE /* AppDelegate.swift */,
 				FBC036CB231681FB00763CDE /* ViewController.swift */,
-				FBC036CD231681FB00763CDE /* Main.storyboard */,
 				FBC036D0231681FD00763CDE /* Assets.xcassets */,
 				FBC036D2231681FD00763CDE /* LaunchScreen.storyboard */,
 				FBC036D5231681FD00763CDE /* Info.plist */,
@@ -365,7 +362,6 @@
 			files = (
 				FBC036D4231681FD00763CDE /* LaunchScreen.storyboard in Resources */,
 				FBC036D1231681FD00763CDE /* Assets.xcassets in Resources */,
-				FBC036CF231681FB00763CDE /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -439,14 +435,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		FBC036CD231681FB00763CDE /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				FBC036CE231681FB00763CDE /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		FBC036D2231681FD00763CDE /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
