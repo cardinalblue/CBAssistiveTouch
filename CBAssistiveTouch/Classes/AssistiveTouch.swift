@@ -12,6 +12,7 @@ import Foundation
 public class AssistiveTouch {
 
     let applicationWindow: UIWindow?
+    let contentViewController: UIViewController?
 
     private lazy var window: UIWindow = {
         let frame = CGRect(x: 0, y: 0,
@@ -21,21 +22,24 @@ public class AssistiveTouch {
         window.center = layout.assitiveTouchInitialPosition
         window.windowLevel = UIWindow.Level.init(CGFloat.greatestFiniteMagnitude)
         window.backgroundColor = .clear
-        window.rootViewController = AssistiveTouchViewController(assistiveTouchWindow: window, layout: layout)
+        window.rootViewController = AssistiveTouchViewController(assistiveTouchWindow: window, layout: layout,
+                                                                 contentViewController: contentViewController)
         window.layer.masksToBounds = true
         return window
     }()
 
     private let layout: AssitiveTouchLayout
 
-    public init(applicationWindow: UIWindow?, layout: AssitiveTouchLayout) {
+    public init(applicationWindow: UIWindow?, layout: AssitiveTouchLayout, contentViewController: UIViewController?) {
         self.applicationWindow = applicationWindow
         self.layout = layout
+        self.contentViewController = contentViewController
     }
 
-    public convenience init(applicationWindow: UIWindow?) {
+    public convenience init(applicationWindow: UIWindow?, contentViewController: UIViewController?) {
         self.init(applicationWindow: applicationWindow,
-                  layout: DefaultAssitiveTouchLayout(keyWindow: applicationWindow))
+                  layout: DefaultAssitiveTouchLayout(keyWindow: applicationWindow),
+                  contentViewController: contentViewController)
     }
 
     public func show() {

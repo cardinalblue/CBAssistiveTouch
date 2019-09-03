@@ -13,16 +13,17 @@ class AssistiveTouchViewController: UIViewController {
 
     unowned let assistiveTouchWindow: UIWindow
     let layout: AssitiveTouchLayout
+    let contentViewController: UIViewController?
 
     private lazy var contentView: UIView = {
         let v = UIView(frame: CGRect(x: 0, y: 0, width: 60, height: 60))
         let darkEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
-        darkEffectView.autoresizingMask = [UIView.AutoresizingMask.flexibleHeight,
-                                           UIView.AutoresizingMask.flexibleWidth,
-                                           UIView.AutoresizingMask.flexibleTopMargin,
-                                           UIView.AutoresizingMask.flexibleBottomMargin,
-                                           UIView.AutoresizingMask.flexibleLeftMargin,
-                                           UIView.AutoresizingMask.flexibleRightMargin]
+        darkEffectView.autoresizingMask = [.flexibleHeight,
+                                           .flexibleWidth,
+                                           .flexibleTopMargin,
+                                           .flexibleBottomMargin,
+                                           .flexibleLeftMargin,
+                                           .flexibleRightMargin]
         darkEffectView.frame = v.bounds
         darkEffectView.layer.cornerRadius = 14
         darkEffectView.clipsToBounds = true
@@ -42,9 +43,10 @@ class AssistiveTouchViewController: UIViewController {
 
     // MARK: Object lifecycle
 
-    init(assistiveTouchWindow: UIWindow, layout: AssitiveTouchLayout) {
+    init(assistiveTouchWindow: UIWindow, layout: AssitiveTouchLayout, contentViewController: UIViewController?) {
         self.assistiveTouchWindow = assistiveTouchWindow
         self.layout = layout
+        self.contentViewController = contentViewController
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -143,13 +145,12 @@ class AssistiveTouchViewController: UIViewController {
     }
 
     private func presentContent() {
-        lastWindowPosition = self.assistiveTouchWindow.center
+        guard let contentViewController = contentViewController else {
+            return
+        }
 
-        let viewController = UIViewController()
-        viewController.preferredContentSize = CGSize(width: 200, height: 300)
-        viewController.view.backgroundColor = UIColor.yellow
-        preferredContentSize = viewController.preferredContentSize
-        present(viewController, animated: false, completion: nil)
+        lastWindowPosition = self.assistiveTouchWindow.center
+        present(contentViewController, animated: false, completion: nil)
 
         UIView.animate(withDuration: layout.animationDuration) {
             self.sizeToFitContent(size: self.contentSize, at: self.assistiveTouchWindow.center)
@@ -170,7 +171,11 @@ class AssistiveTouchViewController: UIViewController {
     // MARK: Dragging
 
     var presentingView: UIView {
-        if let presented = presentedViewController {
+        var topMostPresented = presentedViewController
+        while topMostPresented?.presentedViewController != nil {
+            topMostPresented = topMostPresented?.presentedViewController
+        }
+        if let presented = topMostPresented {
             return presented.view
         } else {
             return contentView
