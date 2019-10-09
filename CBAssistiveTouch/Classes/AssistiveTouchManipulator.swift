@@ -51,53 +51,30 @@ class AssistiveTouchManipulator {
     }
 
 
-    /// Align item to edge by checking item's quardrant and comparing the distance of x and y axis.
+    /// Align item to edge
+    /// 1. Move the box inside of bouding box.
+    /// 2. Calcuating minimum transation to the edge.
     ///
     /// - Parameter bounding: Target bounding
     func align(to bounding: CGRect) {
         var newFrame = itemFrame
-        let center = CGPoint(x: itemFrame.midX, y: itemFrame.midY)
 
-        // Alignment
-        let quadrant = Quadrant(point: center, bounding: bounding)
-        switch quadrant {
-        case .I:
-            if (abs(bounding.maxX - center.x) < abs(bounding.minY - center.y)) {
-                newFrame = newFrame.aligned(to: bounding, at: .right)
-            } else {
-                newFrame = newFrame.aligned(to: bounding, at: .top)
-            }
-        case .II:
-            if (abs(bounding.minX - center.x) < abs(bounding.minY - center.y)) {
-                newFrame = newFrame.aligned(to: bounding, at: .left)
-            } else {
-                newFrame = newFrame.aligned(to: bounding, at: .top)
-            }
-        case .III:
-            if (abs(bounding.minX - center.x) < abs(bounding.maxY - center.y)) {
-                newFrame = newFrame.aligned(to: bounding, at: .left)
-            } else {
-                newFrame = newFrame.aligned(to: bounding, at: .bottom)
-            }
-        case .IV:
-            if (abs(bounding.maxX - center.x) < abs(bounding.maxY - center.y)) {
-                newFrame = newFrame.aligned(to: bounding, at: .right)
-            } else {
-                newFrame = newFrame.aligned(to: bounding, at: .bottom)
-            }
-        }
-
-        // Validation x-axis
+        // - Make sure the target it's inside of bounding box
+        // Check x-axis
         if newFrame.width < bounding.width {
             newFrame.origin.x = max(newFrame.origin.x, bounding.minX)
             newFrame.origin.x = min(newFrame.origin.x, bounding.maxX - newFrame.size.width)
         }
-
-        // Validation y-axis
+        // Check y-axis
         if newFrame.height < bounding.height {
             newFrame.origin.y = max(newFrame.origin.y, bounding.minY)
             newFrame.origin.y = min(newFrame.origin.y, bounding.maxY - newFrame.size.height)
         }
+
+        // - Calcuating minimum transation to bounding box
+        let translation = newFrame.minimumTransltion(to: bounding)
+        newFrame.origin.x += translation.x
+        newFrame.origin.y += translation.y
 
         self.itemFrame = newFrame
     }
