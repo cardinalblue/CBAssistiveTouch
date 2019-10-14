@@ -149,6 +149,10 @@ class AssistiveTouchViewController: UIViewController {
             return
         }
 
+        if #available(iOS 13, *) {
+            contentViewController.modalPresentationStyle = .fullScreen
+        }
+
         lastWindowPosition = self.assistiveTouchWindow.center
         present(contentViewController, animated: false, completion: nil)
 
