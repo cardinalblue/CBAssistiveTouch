@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  CBConsoleViewController.swift
 //  CBAssistiveTouchExample
 //
 //  Created by yyjim on 2019/8/28.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class LoggerCell: UITableViewCell {
+private class LoggerCell: UITableViewCell {
 
     private(set) lazy var label: UILabel = {
         let label = UILabel()
@@ -39,7 +39,7 @@ class LoggerCell: UITableViewCell {
     }
 }
 
-class ViewController: UIViewController {
+class CBConsoleViewController: UIViewController {
 
     private enum Action: String, CaseIterable {
         case clear = "CLEAR"
@@ -61,7 +61,6 @@ class ViewController: UIViewController {
         setupTableView()
         setupInputTextField()
         setupButton()
-
 
         log(event: "gg", parameters: ["name": "xx", "count": 0])
         log(event: "gg", parameters: ["name": "yy", "count": 1])
@@ -201,7 +200,7 @@ class ViewController: UIViewController {
     }
 }
 
-extension ViewController: UITableViewDataSource {
+extension CBConsoleViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items.count
@@ -218,7 +217,7 @@ extension ViewController: UITableViewDataSource {
 }
 
 
-extension ViewController: UITextFieldDelegate {
+extension CBConsoleViewController: UITextFieldDelegate {
 
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         if let text = textField.text, !text.isEmpty {

@@ -16,7 +16,7 @@
 		FBC036C023167A7300763CDE /* TocuhHandling.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC036BF23167A7300763CDE /* TocuhHandling.swift */; };
 		FBC036C2231680E300763CDE /* AssistiveTouchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC036C1231680E300763CDE /* AssistiveTouchViewController.swift */; };
 		FBC036CA231681FB00763CDE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC036C9231681FB00763CDE /* AppDelegate.swift */; };
-		FBC036CC231681FB00763CDE /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC036CB231681FB00763CDE /* ViewController.swift */; };
+		FBC036CC231681FB00763CDE /* CBConsoleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC036CB231681FB00763CDE /* CBConsoleViewController.swift */; };
 		FBC036D1231681FD00763CDE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FBC036D0231681FD00763CDE /* Assets.xcassets */; };
 		FBC036D4231681FD00763CDE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FBC036D2231681FD00763CDE /* LaunchScreen.storyboard */; };
 		FBC036DF231681FD00763CDE /* CBAssistiveTouchExampleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC036DE231681FD00763CDE /* CBAssistiveTouchExampleTests.swift */; };
@@ -78,7 +78,7 @@
 		FBC036C1231680E300763CDE /* AssistiveTouchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistiveTouchViewController.swift; sourceTree = "<group>"; };
 		FBC036C7231681FB00763CDE /* CBAssistiveTouchExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CBAssistiveTouchExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBC036C9231681FB00763CDE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		FBC036CB231681FB00763CDE /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		FBC036CB231681FB00763CDE /* CBConsoleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CBConsoleViewController.swift; sourceTree = "<group>"; };
 		FBC036D0231681FD00763CDE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FBC036D3231681FD00763CDE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		FBC036D5231681FD00763CDE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -190,7 +190,7 @@
 			isa = PBXGroup;
 			children = (
 				FBC036C9231681FB00763CDE /* AppDelegate.swift */,
-				FBC036CB231681FB00763CDE /* ViewController.swift */,
+				FBC036CB231681FB00763CDE /* CBConsoleViewController.swift */,
 				FBC036D0231681FD00763CDE /* Assets.xcassets */,
 				FBC036D2231681FD00763CDE /* LaunchScreen.storyboard */,
 				FBC036D5231681FD00763CDE /* Info.plist */,
@@ -401,7 +401,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				FBC036CC231681FB00763CDE /* ViewController.swift in Sources */,
+				FBC036CC231681FB00763CDE /* CBConsoleViewController.swift in Sources */,
 				FBC036CA231681FB00763CDE /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
