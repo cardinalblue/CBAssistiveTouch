@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FB1F1AC623541C5800D0C1CA /* UIView+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1F1AC523541C5800D0C1CA /* UIView+Ext.swift */; };
 		FBC036A723166F0800763CDE /* CBAssistiveTouch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBC0369D23166F0800763CDE /* CBAssistiveTouch.framework */; };
 		FBC036AC23166F0800763CDE /* CBAssistiveTouchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC036AB23166F0800763CDE /* CBAssistiveTouchTests.swift */; };
 		FBC036AE23166F0800763CDE /* CBAssistiveTouch.h in Headers */ = {isa = PBXBuildFile; fileRef = FBC036A023166F0800763CDE /* CBAssistiveTouch.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -65,6 +66,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		FB1F1AC523541C5800D0C1CA /* UIView+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Ext.swift"; sourceTree = "<group>"; };
 		FBC0369D23166F0800763CDE /* CBAssistiveTouch.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CBAssistiveTouch.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBC036A023166F0800763CDE /* CBAssistiveTouch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CBAssistiveTouch.h; sourceTree = "<group>"; };
 		FBC036A123166F0800763CDE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -182,6 +184,7 @@
 				FBC036BF23167A7300763CDE /* TocuhHandling.swift */,
 				FBC036ED23178E1E00763CDE /* Quadrant.swift */,
 				FBC036EF23178E4900763CDE /* CGRect+Ext.swift */,
+				FB1F1AC523541C5800D0C1CA /* UIView+Ext.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -379,6 +382,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB1F1AC623541C5800D0C1CA /* UIView+Ext.swift in Sources */,
 				FBC036F023178E4900763CDE /* CGRect+Ext.swift in Sources */,
 				FBC036B823166F5100763CDE /* AssistiveTouch.swift in Sources */,
 				FBC036BC2316780100763CDE /* AssistiveTouchLayout.swift in Sources */,

@@ -68,7 +68,7 @@ class AssistiveTouchViewController: UIViewController {
         switch recognizer.state {
         case .began:
             beginDragging()
-            let bounding = assistiveTouchWindow.bounds.inset(by: assistiveTouchWindow.safeAreaInsets)
+            let bounding = assistiveTouchWindow.bounds.inset(by: assistiveTouchWindow.cbat_safeAreaInsetCompatible)
                                                       .insetBy(dx: layout.margin, dy: layout.margin)
             manipulator = AssistiveTouchManipulator(itemFrame: presentingView.frame,
                                                     bounding: bounding)

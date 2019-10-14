@@ -182,7 +182,11 @@ class CBConsoleViewController: UIViewController {
         tableView.dataSource = self
         tableView.backgroundColor = .clear
         tableView.estimatedRowHeight = 22.0
-        tableView.contentInsetAdjustmentBehavior = .never
+        if #available(iOS 11.0, *) {
+            tableView.contentInsetAdjustmentBehavior = .never
+        } else {
+            automaticallyAdjustsScrollViewInsets = false
+        }
         tableView.rowHeight = UITableView.automaticDimension
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(LoggerCell.self, forCellReuseIdentifier: "Cell")
