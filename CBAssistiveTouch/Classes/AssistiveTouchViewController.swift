@@ -16,27 +16,16 @@ class AssistiveTouchViewController: UIViewController {
     let contentViewController: UIViewController?
 
     private lazy var contentView: UIView = {
-        let v = UIView(frame: CGRect(x: 0, y: 0, width: 60, height: 60))
-        let darkEffectView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
-        darkEffectView.autoresizingMask = [.flexibleHeight,
-                                           .flexibleWidth,
-                                           .flexibleTopMargin,
-                                           .flexibleBottomMargin,
-                                           .flexibleLeftMargin,
-                                           .flexibleRightMargin]
-        darkEffectView.frame = v.bounds
-        darkEffectView.layer.cornerRadius = 14
-        darkEffectView.clipsToBounds = true
-        v.addSubview(darkEffectView)
-
-        return v
+        var bounds = CGRect.zero
+        bounds.size = layout.assitiveTouchSize
+        return UIView(frame: bounds)
     }()
 
     private var lastWindowPosition: CGPoint?
 
     private lazy var assistiveTouchView: UIView = {
-        let v = UIView(frame: CGRect(x: 0, y: 0, width: 60, height: 60))
-        return v
+        let v = UIView(frame: contentView.bounds)
+        return layout.customView ?? v
     }()
 
     private var manipulator: AssistiveTouchManipulator?
