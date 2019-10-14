@@ -8,13 +8,13 @@
 
 Pod::Spec.new do |s|
   s.name             = 'CBAssistiveTouch'
-  s.version          = '0.1.0'
+  s.version          = '0.1.1'
   s.summary          = 'Assistive button the same as iOS AssistiveTouch'
   s.homepage         = 'https://github.com/cardinalblue/CBAssistiveTouch'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
   s.author           = { 'yy' => 'yy@cardinalblue.com' }
   s.source           = { :git => 'git@github.com:cardinalblue/CBAssistiveTouch.git', :tag => s.version.to_s }
   s.ios.deployment_target = '10.0'
-  s.swift_version = '5.1'
+  s.swift_version = '5'
   s.source_files = 'CBAssistiveTouch/Classes/**/*.{swift}'
 end
