@@ -37,6 +37,16 @@ class AssistiveTouchViewController: UIViewController {
         self.layout = layout
         self.contentViewController = contentViewController
         super.init(nibName: nil, bundle: nil)
+
+
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillChangeFrame(notification:)),
+                                               name: UIResponder.keyboardWillShowNotification,
+                                               object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillChangeFrame(notification:)),
+                                               name: UIResponder.keyboardWillHideNotification,
+                                               object: nil)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -194,4 +204,45 @@ class AssistiveTouchViewController: UIViewController {
         lastWindowPosition = assistiveTouchWindow.center
     }
 
+
+    @objc private func keyboardWillChangeFrame(notification: Notification) {
+        guard let keyboard = KeyboardNotification(notification) else {
+            return
+        }
+
+        let target = assistiveTouchWindow
+        var newCenter: CGPoint?
+
+        switch notification.name {
+        // Show keyboard
+        case UIResponder.keyboardWillShowNotification:
+            let yOffset = target.frame.maxY - keyboard.endFrame.minY
+            // Return if keyboard doesn't cover the assistiveTouch.
+            guard yOffset > 0 else {
+                return
+            }
+            // The keyboard will cover the assisitveTouch.
+            // Shift it alongs with the keyboard.
+            lastWindowPosition = assistiveTouchWindow.center
+            newCenter = CGPoint(x: assistiveTouchWindow.center.x,
+                                y: assistiveTouchWindow.center.y - layout.margin - yOffset)
+        // Hide keyboard
+        case UIResponder.keyboardWillHideNotification:
+            // Restore to lastWindowPosition
+            newCenter = lastWindowPosition
+        default:
+            return
+        }
+
+        if let newCenter = newCenter {
+            UIView.animate(withDuration: keyboard.animationDuration,
+                           delay: 0,
+                           options: keyboard.animationOptions,
+                           animations: {
+                            target.center = newCenter
+            },
+                           completion: { _ in
+            })
+        }
+    }
 }

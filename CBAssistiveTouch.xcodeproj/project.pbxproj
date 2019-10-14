@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		FB1F1AC623541C5800D0C1CA /* UIView+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1F1AC523541C5800D0C1CA /* UIView+Ext.swift */; };
+		FB1F1ACD235464A900D0C1CA /* KeyboardNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1F1ACC235464A900D0C1CA /* KeyboardNotification.swift */; };
 		FB1F1ACF23546F7200D0C1CA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1F1ACE23546F7200D0C1CA /* ViewController.swift */; };
 		FBC036A723166F0800763CDE /* CBAssistiveTouch.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FBC0369D23166F0800763CDE /* CBAssistiveTouch.framework */; };
 		FBC036AC23166F0800763CDE /* CBAssistiveTouchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBC036AB23166F0800763CDE /* CBAssistiveTouchTests.swift */; };
@@ -68,6 +69,7 @@
 
 /* Begin PBXFileReference section */
 		FB1F1AC523541C5800D0C1CA /* UIView+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Ext.swift"; sourceTree = "<group>"; };
+		FB1F1ACC235464A900D0C1CA /* KeyboardNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardNotification.swift; sourceTree = "<group>"; };
 		FB1F1ACE23546F7200D0C1CA /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		FBC0369D23166F0800763CDE /* CBAssistiveTouch.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CBAssistiveTouch.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FBC036A023166F0800763CDE /* CBAssistiveTouch.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CBAssistiveTouch.h; sourceTree = "<group>"; };
@@ -187,6 +189,7 @@
 				FBC036ED23178E1E00763CDE /* Quadrant.swift */,
 				FBC036EF23178E4900763CDE /* CGRect+Ext.swift */,
 				FB1F1AC523541C5800D0C1CA /* UIView+Ext.swift */,
+				FB1F1ACC235464A900D0C1CA /* KeyboardNotification.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -385,6 +388,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB1F1ACD235464A900D0C1CA /* KeyboardNotification.swift in Sources */,
 				FB1F1AC623541C5800D0C1CA /* UIView+Ext.swift in Sources */,
 				FBC036F023178E4900763CDE /* CGRect+Ext.swift in Sources */,
 				FBC036B823166F5100763CDE /* AssistiveTouch.swift in Sources */,
