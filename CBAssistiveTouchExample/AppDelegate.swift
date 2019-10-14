@@ -16,7 +16,18 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private lazy var assistiveTouch: AssistiveTouch = {
         let contentViewController = ViewController()
-        return AssistiveTouch(applicationWindow: self.window, contentViewController: contentViewController)
+        contentViewController.preferredContentSize = CGSize(width: 300, height: 300)
+        let layout = DefaultAssitiveTouchLayout(keyWindow: self.window)
+        layout.customView = { () -> UIView in
+            let label = UILabel(frame: .zero)
+            label.text = "🛠️"
+            label.sizeToFit()
+            return label
+        }()
+        layout.assitiveTouchSize = layout.customView!.bounds.size
+        layout.margin = 15
+
+        return AssistiveTouch(applicationWindow: self.window, layout: layout, contentViewController: contentViewController)
     }()
 
     func application(_ application: UIApplication,
