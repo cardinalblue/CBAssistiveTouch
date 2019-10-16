@@ -61,12 +61,12 @@ class AssistiveTouchManipulator {
 
         // - Make sure the target it's inside of bounding box
         // Check x-axis
-        if newFrame.width < bounding.width {
+        if newFrame.width <= bounding.width {
             newFrame.origin.x = max(newFrame.origin.x, bounding.minX)
             newFrame.origin.x = min(newFrame.origin.x, bounding.maxX - newFrame.size.width)
         }
         // Check y-axis
-        if newFrame.height < bounding.height {
+        if newFrame.height <= bounding.height {
             newFrame.origin.y = max(newFrame.origin.y, bounding.minY)
             newFrame.origin.y = min(newFrame.origin.y, bounding.maxY - newFrame.size.height)
         }

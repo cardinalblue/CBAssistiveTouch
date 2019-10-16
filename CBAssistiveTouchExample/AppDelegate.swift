@@ -16,7 +16,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private lazy var assistiveTouch: AssistiveTouch = {
         let contentViewController = CBConsoleViewController()
-        contentViewController.preferredContentSize = CGSize(width: 300, height: 300)
         let layout = DefaultAssitiveTouchLayout(keyWindow: self.window)
         layout.customView = { () -> UIView in
             let label = UILabel(frame: .zero)
@@ -26,7 +25,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }()
         layout.assitiveTouchSize = layout.customView!.bounds.size
         layout.margin = 15
-
+        contentViewController.preferredContentSize = CGSize(width: UIScreen.main.bounds.size.width - 2 * layout.margin, height: 300)
         return AssistiveTouch(applicationWindow: self.window, layout: layout, contentViewController: contentViewController)
     }()
 
