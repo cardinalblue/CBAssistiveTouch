@@ -250,13 +250,13 @@ class AssistiveTouchViewController: UIViewController {
 
 extension AssistiveTouchViewController: AssistiveTouchWindowDelegate {
 
-    func assistiveTouchWindowShouldPassthroughTouch(window: AssistiveTouchWindow, at point: CGPoint) -> Bool {
+    func assistiveTouchWindowShouldPassthroughTouch(window: AssistiveTouchWindow, at point: CGPoint) -> Bool? {
         if let passthroughable = presentedViewController as? ATPassthroughable,
             let presentedView = presentedViewController?.view {
             // Convert to receiver's coordinate system
             let localPoint = window.convert(point, to: presentedView)
             return passthroughable.shouldPassthroughTouch(at: localPoint)
         }
-        return false
+        return nil
     }
 }

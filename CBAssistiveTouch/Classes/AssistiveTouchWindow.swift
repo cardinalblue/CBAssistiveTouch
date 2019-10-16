@@ -9,7 +9,7 @@
 import Foundation
 
 protocol AssistiveTouchWindowDelegate: class {
-    func assistiveTouchWindowShouldPassthroughTouch(window: AssistiveTouchWindow, at: CGPoint) -> Bool
+    func assistiveTouchWindowShouldPassthroughTouch(window: AssistiveTouchWindow, at: CGPoint) -> Bool?
 }
 
 class AssistiveTouchWindow: UIWindow {
@@ -17,8 +17,8 @@ class AssistiveTouchWindow: UIWindow {
     weak var delegate: AssistiveTouchWindowDelegate?
 
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        if let delegate = delegate {
-            return delegate.assistiveTouchWindowShouldPassthroughTouch(window: self, at: point) ? false : true
+        if let delegate = delegate, let shouldPassthrough = delegate.assistiveTouchWindowShouldPassthroughTouch(window: self, at: point) {
+            return shouldPassthrough ? false : true
         }
         return super.point(inside: point, with: event)
     }
