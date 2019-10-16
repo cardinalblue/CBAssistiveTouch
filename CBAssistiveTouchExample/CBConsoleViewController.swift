@@ -6,6 +6,7 @@
 //  Copyright © 2019 Cardinalblue. All rights reserved.
 //
 
+import CBAssistiveTouch
 import UIKit
 
 private class LoggerCell: UITableViewCell {
@@ -39,6 +40,21 @@ private class LoggerCell: UITableViewCell {
     }
 }
 
+extension CBConsoleViewController: ATPassthroughable {
+
+    func shouldPassthroughTouch(at point: CGPoint) -> Bool {
+
+        if toolBarView.frame.contains(point) {
+            return false
+        }
+
+        let bounds = view.bounds
+        let rect = CGRect(x: bounds.maxX - 44, y: 0, width: 44, height: bounds.height)
+        return !rect.contains(point)
+    }
+
+}
+
 class CBConsoleViewController: UIViewController {
 
     private enum Action: String, CaseIterable {
@@ -48,6 +64,7 @@ class CBConsoleViewController: UIViewController {
 
     var items: [String] = ["xxx", "yyy", "ccc"]
 
+    private let toolBarView = UIView()
     private let tableView = UITableView(frame: .zero, style: .plain)
     private let inputTextField = UITextField(frame: .zero)
 
@@ -88,14 +105,13 @@ class CBConsoleViewController: UIViewController {
     }
 
     private func setupTopBar() {
-        let bar = UIView()
-        bar.backgroundColor = UIColor.lightGray
-        bar.autoresizingMask = [.flexibleWidth,
+        toolBarView.backgroundColor = UIColor.lightGray
+        toolBarView.autoresizingMask = [.flexibleWidth,
                                 .flexibleLeftMargin,
                                 .flexibleRightMargin,
                                 .flexibleBottomMargin]
-        bar.frame = CGRect(x: 0, y: 0, width: view.bounds.size.width, height: 30)
-        view.addSubview(bar)
+        toolBarView.frame = CGRect(x: 0, y: 0, width: view.bounds.size.width, height: 30)
+        view.addSubview(toolBarView)
     }
 
     private func setupButton() {
