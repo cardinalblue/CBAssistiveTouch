@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		FB064CB12356C266002D39EA /* AssistiveTouchWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB064CB02356C266002D39EA /* AssistiveTouchWindow.swift */; };
+		FB064CB32356C85C002D39EA /* ATPassthroughable.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB064CB22356C85C002D39EA /* ATPassthroughable.swift */; };
 		FB1F1AC623541C5800D0C1CA /* UIView+Ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1F1AC523541C5800D0C1CA /* UIView+Ext.swift */; };
 		FB1F1ACD235464A900D0C1CA /* KeyboardNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1F1ACC235464A900D0C1CA /* KeyboardNotification.swift */; };
 		FB1F1ACF23546F7200D0C1CA /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1F1ACE23546F7200D0C1CA /* ViewController.swift */; };
@@ -68,6 +70,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		FB064CB02356C266002D39EA /* AssistiveTouchWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AssistiveTouchWindow.swift; sourceTree = "<group>"; };
+		FB064CB22356C85C002D39EA /* ATPassthroughable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ATPassthroughable.swift; sourceTree = "<group>"; };
 		FB1F1AC523541C5800D0C1CA /* UIView+Ext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Ext.swift"; sourceTree = "<group>"; };
 		FB1F1ACC235464A900D0C1CA /* KeyboardNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardNotification.swift; sourceTree = "<group>"; };
 		FB1F1ACE23546F7200D0C1CA /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -190,6 +194,8 @@
 				FBC036EF23178E4900763CDE /* CGRect+Ext.swift */,
 				FB1F1AC523541C5800D0C1CA /* UIView+Ext.swift */,
 				FB1F1ACC235464A900D0C1CA /* KeyboardNotification.swift */,
+				FB064CB02356C266002D39EA /* AssistiveTouchWindow.swift */,
+				FB064CB22356C85C002D39EA /* ATPassthroughable.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -391,11 +397,13 @@
 				FB1F1ACD235464A900D0C1CA /* KeyboardNotification.swift in Sources */,
 				FB1F1AC623541C5800D0C1CA /* UIView+Ext.swift in Sources */,
 				FBC036F023178E4900763CDE /* CGRect+Ext.swift in Sources */,
+				FB064CB12356C266002D39EA /* AssistiveTouchWindow.swift in Sources */,
 				FBC036B823166F5100763CDE /* AssistiveTouch.swift in Sources */,
 				FBC036BC2316780100763CDE /* AssistiveTouchLayout.swift in Sources */,
 				FBC036C023167A7300763CDE /* TocuhHandling.swift in Sources */,
 				FBC036EE23178E1E00763CDE /* Quadrant.swift in Sources */,
 				FBC036BE2316799400763CDE /* AssistiveTouchManipulator.swift in Sources */,
+				FB064CB32356C85C002D39EA /* ATPassthroughable.swift in Sources */,
 				FBC036C2231680E300763CDE /* AssistiveTouchViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

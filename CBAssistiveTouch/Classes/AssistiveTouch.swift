@@ -14,11 +14,11 @@ public class AssistiveTouch {
     let applicationWindow: UIWindow?
     let contentViewController: UIViewController?
 
-    private lazy var window: UIWindow = {
+    private lazy var window: AssistiveTouchWindow = {
         let frame = CGRect(x: 0, y: 0,
                            width: layout.assitiveTouchSize.width,
                            height: layout.assitiveTouchSize.height)
-        let window = UIWindow(frame: frame)
+        let window = AssistiveTouchWindow(frame: frame)
         window.center = layout.assitiveTouchInitialPosition
         window.windowLevel = UIWindow.Level.init(CGFloat.greatestFiniteMagnitude)
         window.backgroundColor = .clear

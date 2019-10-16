@@ -11,7 +11,7 @@ import Foundation
 
 class AssistiveTouchViewController: UIViewController {
 
-    unowned let assistiveTouchWindow: UIWindow
+    unowned let assistiveTouchWindow: AssistiveTouchWindow
     let layout: AssitiveTouchLayout
     let contentViewController: UIViewController?
 
@@ -32,12 +32,13 @@ class AssistiveTouchViewController: UIViewController {
 
     // MARK: Object lifecycle
 
-    init(assistiveTouchWindow: UIWindow, layout: AssitiveTouchLayout, contentViewController: UIViewController?) {
+    init(assistiveTouchWindow: AssistiveTouchWindow, layout: AssitiveTouchLayout, contentViewController: UIViewController?) {
         self.assistiveTouchWindow = assistiveTouchWindow
         self.layout = layout
         self.contentViewController = contentViewController
         super.init(nibName: nil, bundle: nil)
 
+        self.assistiveTouchWindow.delegate = self
 
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(keyboardWillChangeFrame(notification:)),
@@ -244,5 +245,18 @@ class AssistiveTouchViewController: UIViewController {
                            completion: { _ in
             })
         }
+    }
+}
+
+extension AssistiveTouchViewController: AssistiveTouchWindowDelegate {
+
+    func assistiveTouchWindowShouldPassthroughTouch(window: AssistiveTouchWindow, at point: CGPoint) -> Bool {
+        if let passthroughable = presentedViewController as? ATPassthroughable,
+            let presentedView = presentedViewController?.view {
+            // Convert to receiver's coordinate system
+            let localPoint = window.convert(point, to: presentedView)
+            return passthroughable.shouldPassthroughTouch(at: localPoint)
+        }
+        return false
     }
 }
