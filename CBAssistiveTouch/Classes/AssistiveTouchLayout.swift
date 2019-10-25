@@ -36,8 +36,13 @@ public class DefaultAssitiveTouchLayout: AssitiveTouchLayout {
 
     public var safeAreaInsets: UIEdgeInsets
 
-    public init(keyWindow: UIWindow?) {
-        safeAreaInsets = keyWindow?.cbat_safeAreaInsetCompatible ?? UIEdgeInsets.zero
+    public init(safeAreaInsets: UIEdgeInsets) {
+        self.safeAreaInsets = safeAreaInsets
+    }
+
+    public convenience init(applicationWindow: UIWindow?) {
+        let safeAreaInsets = applicationWindow?.cbat_safeAreaInsetCompatible ?? .zero
+        self.init(safeAreaInsets: safeAreaInsets)
     }
 
 }

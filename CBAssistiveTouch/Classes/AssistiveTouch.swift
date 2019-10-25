@@ -38,7 +38,7 @@ public class AssistiveTouch {
 
     public convenience init(applicationWindow: UIWindow?, contentViewController: UIViewController?) {
         self.init(applicationWindow: applicationWindow,
-                  layout: DefaultAssitiveTouchLayout(keyWindow: applicationWindow),
+                  layout: DefaultAssitiveTouchLayout(applicationWindow: applicationWindow),
                   contentViewController: contentViewController)
     }
 

@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private lazy var assistiveTouch: AssistiveTouch = {
         let contentViewController = CBConsoleViewController()
-        let layout = DefaultAssitiveTouchLayout(keyWindow: self.window)
+        let layout = DefaultAssitiveTouchLayout(applicationWindow: self.window)
         layout.customView = { () -> UIView in
             let label = UILabel(frame: .zero)
             label.text = "🛠️"
