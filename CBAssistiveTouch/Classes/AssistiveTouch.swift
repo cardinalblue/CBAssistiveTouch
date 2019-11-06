@@ -46,6 +46,18 @@ public class AssistiveTouch {
         maskVisibleWindow()
     }
 
+    public func hide() {
+        window.isHidden = true
+    }
+
+    public func toggle() {
+        if window.isHidden {
+            show()
+        } else {
+            hide()
+        }
+    }
+
     private func maskVisibleWindow() {
         window.makeKeyAndVisible()
         applicationWindow?.makeKey()
