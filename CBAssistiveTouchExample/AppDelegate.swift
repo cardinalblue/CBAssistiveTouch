@@ -12,11 +12,16 @@ import UIKit
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    var window: UIWindow?
+    lazy var window: UIWindow? = {
+        UIWindow(frame: UIScreen.main.bounds)
+    }()
 
     private lazy var assistiveTouch: AssistiveTouch = {
         let contentViewController = CBConsoleViewController()
         let layout = DefaultAssitiveTouchLayout(applicationWindow: self.window)
+        if #available(iOS 11, *) {
+            layout.safeAreaInsets = window?.safeAreaInsets ?? .zero
+        }
         layout.customView = { () -> UIView in
             let label = UILabel(frame: .zero)
             label.text = "🛠️"
@@ -31,10 +36,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication,
                      didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-
         let rootVC = ViewController(assistiveTouch: assistiveTouch)
 
-        window = UIWindow(frame: UIScreen.main.bounds)
         window?.rootViewController = rootVC
         window?.makeKeyAndVisible()
 
