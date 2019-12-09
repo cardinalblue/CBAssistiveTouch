@@ -14,6 +14,10 @@ public class AssistiveTouch {
     let applicationWindow: UIWindow?
     let contentViewController: UIViewController?
 
+    private var assistiveTouchViewController: AssistiveTouchViewController {
+        return window.rootViewController as! AssistiveTouchViewController
+    }
+
     private lazy var window: AssistiveTouchWindow = {
         let frame = CGRect(x: 0, y: 0,
                            width: layout.assitiveTouchSize.width,
@@ -56,6 +60,18 @@ public class AssistiveTouch {
         } else {
             hide()
         }
+    }
+
+    public func showContent() {
+        assistiveTouchViewController.presentContent()
+    }
+
+    public func hideContent() {
+        assistiveTouchViewController.dismissContent()
+    }
+
+    public func toggleContent() {
+        assistiveTouchViewController.toggleContent()
     }
 
     private func maskVisibleWindow() {
