@@ -108,11 +108,7 @@ class AssistiveTouchViewController: UIViewController {
     }
 
     @objc private func handleTapGesture(recognizer: UITapGestureRecognizer) {
-        if presentedViewController != nil {
-            dismissContent()
-        } else {
-            presentContent()
-        }
+        toggleContent()
     }
 
     private var contentSize: CGSize {
@@ -144,7 +140,15 @@ class AssistiveTouchViewController: UIViewController {
 
     }
 
-    private func presentContent() {
+    func toggleContent() {
+        if presentedViewController != nil {
+            dismissContent()
+        } else {
+            presentContent()
+        }
+    }
+
+    func presentContent() {
         guard let contentViewController = contentViewController else {
             return
         }
@@ -161,7 +165,7 @@ class AssistiveTouchViewController: UIViewController {
         }
     }
 
-    private func dismissContent() {
+    func dismissContent() {
         UIView.animate(withDuration: layout.animationDuration, animations: {
             self.sizeToFitContent(size: self.contentView.bounds.size,
                                   at: self.lastWindowPosition ?? self.assistiveTouchWindow.center)
