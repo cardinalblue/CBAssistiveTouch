@@ -18,6 +18,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private lazy var assistiveTouch: AssistiveTouch = {
         let contentViewController = CBConsoleViewController()
+        contentViewController.toggleHandler = { [unowned self] in
+            self.assistiveTouch.toggleContent()
+        }
         let layout = DefaultAssitiveTouchLayout(applicationWindow: self.window)
         if #available(iOS 11, *) {
             layout.safeAreaInsets = window?.safeAreaInsets ?? .zero

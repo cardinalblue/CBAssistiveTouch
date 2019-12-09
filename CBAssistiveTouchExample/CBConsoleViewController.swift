@@ -60,6 +60,7 @@ class CBConsoleViewController: UIViewController {
     private enum Action: String, CaseIterable {
         case clear = "CLEAR"
         case reset = "RESET"
+        case toggle = "TOGGLE"
     }
 
     var items: [String] = ["xxx", "yyy", "ccc"]
@@ -67,6 +68,8 @@ class CBConsoleViewController: UIViewController {
     private let toolBarView = UIView()
     private let tableView = UITableView(frame: .zero, style: .plain)
     private let inputTextField = UITextField(frame: .zero)
+
+    var toggleHandler: (() -> Void)?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -141,12 +144,19 @@ class CBConsoleViewController: UIViewController {
             b.addTarget(self, action: #selector(handleClearButtonPressed), for: .touchUpInside)
         case .reset:
             b.addTarget(self, action: #selector(handleResetButtonPressed), for: .touchUpInside)
+        case .toggle:
+            b.addTarget(self, action: #selector(handleToggleButtonPressed), for: .touchUpInside)
         }
         return b
     }
 
     @objc private func handleResetButtonPressed() {
         // reset
+        print("Reset")
+    }
+
+    @objc private func handleToggleButtonPressed() {
+        toggleHandler?()
     }
 
     @objc private func handleClearButtonPressed() {
