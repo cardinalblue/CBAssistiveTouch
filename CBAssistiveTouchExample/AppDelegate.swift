@@ -34,7 +34,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         layout.assitiveTouchSize = layout.customView!.bounds.size
         layout.margin = 15
         contentViewController.preferredContentSize = CGSize(width: UIScreen.main.bounds.size.width - 2 * layout.margin, height: 300)
-        return AssistiveTouch(applicationWindow: self.window, layout: layout, contentViewController: contentViewController)
+        return AssistiveTouch(layout: layout, contentViewController: contentViewController)
     }()
 
     func application(_ application: UIApplication,
