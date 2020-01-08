@@ -11,7 +11,6 @@ import Foundation
 
 public class AssistiveTouch {
 
-    let applicationWindow: UIWindow?
     let contentViewController: UIViewController?
 
     private var assistiveTouchViewController: AssistiveTouchViewController {
@@ -34,20 +33,18 @@ public class AssistiveTouch {
 
     private let layout: AssitiveTouchLayout
 
-    public init(applicationWindow: UIWindow?, layout: AssitiveTouchLayout, contentViewController: UIViewController?) {
-        self.applicationWindow = applicationWindow
+    public init(layout: AssitiveTouchLayout, contentViewController: UIViewController?) {
         self.layout = layout
         self.contentViewController = contentViewController
     }
 
     public convenience init(applicationWindow: UIWindow?, contentViewController: UIViewController?) {
-        self.init(applicationWindow: applicationWindow,
-                  layout: DefaultAssitiveTouchLayout(applicationWindow: applicationWindow),
+        self.init(layout: DefaultAssitiveTouchLayout(applicationWindow: applicationWindow),
                   contentViewController: contentViewController)
     }
 
     public func show() {
-        maskVisibleWindow()
+        window.isHidden = false
     }
 
     public func hide() {
@@ -73,10 +70,4 @@ public class AssistiveTouch {
     public func toggleContent() {
         assistiveTouchViewController.toggleContent()
     }
-
-    private func maskVisibleWindow() {
-        window.makeKeyAndVisible()
-        applicationWindow?.makeKey()
-    }
-
 }
