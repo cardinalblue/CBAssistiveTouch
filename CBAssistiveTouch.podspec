@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'CBAssistiveTouch'
-  s.version          = '0.1.7'
+  s.version          = '0.1.8'
   s.summary          = 'Assistive button the same as iOS AssistiveTouch'
   s.homepage         = 'https://github.com/cardinalblue/CBAssistiveTouch'
   s.license          = { :type => 'MIT', :file => 'LICENSE' }
