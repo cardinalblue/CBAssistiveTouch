@@ -9,7 +9,7 @@
 import UIKit
 import Foundation
 
-public class AssistiveTouch {
+open class AssistiveTouch {
 
     let contentViewController: UIViewController?
 
