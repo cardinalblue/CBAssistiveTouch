@@ -67,7 +67,7 @@ open class AssistiveTouch {
         assistiveTouchViewController.dismissContent()
     }
 
-    public func toggleContent() {
+    open func toggleContent() {
         assistiveTouchViewController.toggleContent()
     }
 }
