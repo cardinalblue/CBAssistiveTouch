@@ -8,18 +8,18 @@
 
 import Foundation
 
-public protocol AssitiveTouchLayout {
+public protocol AssistiveTouchLayout {
 
     var safeAreaInsets: UIEdgeInsets { get }
     var customView: UIView? { get }
     var margin: CGFloat { get }
     var animationDuration: TimeInterval { get }
-    var assitiveTouchSize: CGSize { get }
-    var assitiveTouchInitialPosition: CGPoint { get }
+    var assistiveTouchSize: CGSize { get }
+    var assistiveTouchInitialPosition: CGPoint { get }
 
 }
 
-public class DefaultAssitiveTouchLayout: AssitiveTouchLayout {
+public class DefaultAssistiveTouchLayout: AssistiveTouchLayout {
 
     public var customView: UIView? = nil
 
@@ -27,11 +27,11 @@ public class DefaultAssitiveTouchLayout: AssitiveTouchLayout {
 
     public var margin: CGFloat = 20
 
-    public var assitiveTouchSize: CGSize = CGSize(width: 60, height: 60)
+    public var assistiveTouchSize: CGSize = CGSize(width: 60, height: 60)
 
-    public var assitiveTouchInitialPosition: CGPoint {
+    public var assistiveTouchInitialPosition: CGPoint {
         let screen = UIScreen.main.bounds
-        return CGPoint(x: screen.width - assitiveTouchSize.width / 2 - margin, y: screen.midY)
+        return CGPoint(x: screen.width - assistiveTouchSize.width / 2 - margin, y: screen.midY)
     }
 
     public var safeAreaInsets: UIEdgeInsets

@@ -12,12 +12,12 @@ import Foundation
 class AssistiveTouchViewController: UIViewController {
 
     unowned let assistiveTouchWindow: AssistiveTouchWindow
-    let layout: AssitiveTouchLayout
+    let layout: AssistiveTouchLayout
     let contentViewController: UIViewController?
 
     private lazy var contentView: UIView = {
         var bounds = CGRect.zero
-        bounds.size = layout.assitiveTouchSize
+        bounds.size = layout.assistiveTouchSize
         return UIView(frame: bounds)
     }()
 
@@ -32,7 +32,7 @@ class AssistiveTouchViewController: UIViewController {
 
     // MARK: Object lifecycle
 
-    init(assistiveTouchWindow: AssistiveTouchWindow, layout: AssitiveTouchLayout, contentViewController: UIViewController?) {
+    init(assistiveTouchWindow: AssistiveTouchWindow, layout: AssistiveTouchLayout, contentViewController: UIViewController?) {
         self.assistiveTouchWindow = assistiveTouchWindow
         self.layout = layout
         self.contentViewController = contentViewController
@@ -115,7 +115,7 @@ class AssistiveTouchViewController: UIViewController {
         if let presented = presentedViewController {
             return presented.preferredContentSize
         }
-        return layout.assitiveTouchSize
+        return layout.assistiveTouchSize
     }
 
     // MARK:

@@ -8,7 +8,7 @@
 
 import Foundation
 
-protocol AssistiveTouchWindowDelegate: class {
+protocol AssistiveTouchWindowDelegate: AnyObject {
     func assistiveTouchWindowShouldPassthroughTouch(window: AssistiveTouchWindow, at: CGPoint) -> Bool?
 }
 

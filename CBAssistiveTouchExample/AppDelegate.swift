@@ -21,7 +21,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         contentViewController.toggleHandler = { [unowned self] in
             self.assistiveTouch.toggleContent()
         }
-        let layout = DefaultAssitiveTouchLayout(applicationWindow: self.window)
+        let layout = DefaultAssistiveTouchLayout(applicationWindow: self.window)
         if #available(iOS 11, *) {
             layout.safeAreaInsets = window?.safeAreaInsets ?? .zero
         }
@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             label.sizeToFit()
             return label
         }()
-        layout.assitiveTouchSize = layout.customView!.bounds.size
+        layout.assistiveTouchSize = layout.customView!.bounds.size
         layout.margin = 15
         contentViewController.preferredContentSize = CGSize(width: UIScreen.main.bounds.size.width - 2 * layout.margin, height: 300)
         return AssistiveTouch(layout: layout, contentViewController: contentViewController)
