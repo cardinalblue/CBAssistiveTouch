@@ -24,7 +24,13 @@ public class AssistiveTouch {
             width: layout.assistiveTouchSize.width,
             height: layout.assistiveTouchSize.height
         )
-        let window = AssistiveTouchWindow(frame: frame)
+        let window = { () -> AssistiveTouchWindow in
+            if let windowScene = applicationWindow?.windowScene {
+                return AssistiveTouchWindow(windowScene: windowScene)
+            }
+            return AssistiveTouchWindow(frame: frame)
+        }()
+        window.frame = frame
         window.center = layout.assistiveTouchInitialPosition
         window.windowLevel = UIWindow.Level.init(CGFloat.greatestFiniteMagnitude)
         window.backgroundColor = .clear
@@ -37,16 +43,22 @@ public class AssistiveTouch {
         return window
     }()
 
+    let applicationWindow: UIWindow?
+
     private let layout: AssistiveTouchLayout
 
-    public init(layout: AssistiveTouchLayout, contentViewController: UIViewController?) {
+    public init(applicationWindow: UIWindow?, layout: AssistiveTouchLayout, contentViewController: UIViewController?) {
+        self.applicationWindow = applicationWindow
         self.layout = layout
         self.contentViewController = contentViewController
     }
 
     public convenience init(applicationWindow: UIWindow?, contentViewController: UIViewController?) {
-        self.init(layout: DefaultAssistiveTouchLayout(applicationWindow: applicationWindow),
-                  contentViewController: contentViewController)
+        self.init(
+            applicationWindow: applicationWindow,
+            layout: DefaultAssistiveTouchLayout(applicationWindow: applicationWindow),
+            contentViewController: contentViewController
+        )
     }
 
     public func show() {

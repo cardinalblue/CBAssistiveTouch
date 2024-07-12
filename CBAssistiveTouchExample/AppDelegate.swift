@@ -34,11 +34,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         layout.assistiveTouchSize = layout.customView!.bounds.size
         layout.margin = 15
         contentViewController.preferredContentSize = CGSize(width: UIScreen.main.bounds.size.width - 2 * layout.margin, height: 300)
-        return AssistiveTouch(layout: layout, contentViewController: contentViewController)
+        return AssistiveTouch(applicationWindow: window, layout: layout, contentViewController: contentViewController)
     }()
 
-    func application(_ application: UIApplication,
-                     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
+    ) -> Bool {
         let rootVC = ViewController(assistiveTouch: assistiveTouch)
 
         window?.rootViewController = rootVC
