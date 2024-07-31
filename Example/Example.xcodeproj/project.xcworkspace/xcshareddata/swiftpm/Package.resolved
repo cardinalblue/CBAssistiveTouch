@@ -1,0 +1,15 @@
+{
+  "originHash" : "ee674eb390bebeb6850107c155f878e1ad4f5a41ca99e01ae9d6c61807da2e01",
+  "pins" : [
+    {
+      "identity" : "cbassistivetouch",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/cardinalblue/CBAssistiveTouch",
+      "state" : {
+        "branch" : "build/migrate-spm",
+        "revision" : "dbfa2d3e5084a5d39b96cf0fed6829d5880eb3e2"
+      }
+    }
+  ],
+  "version" : 3
+}

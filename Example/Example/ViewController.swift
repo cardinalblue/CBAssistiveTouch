@@ -1,9 +1,8 @@
 //
 //  ViewController.swift
-//  CBAssistiveTouchExample
+//  Example
 //
-//  Created by yyjim on 2019/10/14.
-//  Copyright © 2019 Cardinalblue. All rights reserved.
+//  Created by Keke Arif on 2024/7/31.
 //
 
 import CBAssistiveTouch
@@ -11,7 +10,6 @@ import UIKit
 import Foundation
 
 class ViewController: UIViewController {
-
     private let assistiveTouch: AssistiveTouch
     private let inputTextField = UITextField()
     private let toggleButton = UIButton(type: .custom)
@@ -57,4 +55,3 @@ class ViewController: UIViewController {
         assistiveTouch.toggle()
     }
 }
-
