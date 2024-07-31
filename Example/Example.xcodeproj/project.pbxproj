@@ -12,8 +12,8 @@
 		A83605A62C5A10BE00543D05 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83605A52C5A10BE00543D05 /* ViewController.swift */; };
 		A83605AB2C5A10BF00543D05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A83605AA2C5A10BF00543D05 /* Assets.xcassets */; };
 		A83605AE2C5A10BF00543D05 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = A83605AD2C5A10BF00543D05 /* Base */; };
-		A83605B72C5A12E500543D05 /* CBAssistiveTouch in Frameworks */ = {isa = PBXBuildFile; productRef = A83605B62C5A12E500543D05 /* CBAssistiveTouch */; };
 		A83605BB2C5A17D100543D05 /* CBConsoleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83605BA2C5A17D100543D05 /* CBConsoleViewController.swift */; };
+		A8F61DF02C5A229F00AB406F /* CBAssistiveTouch in Frameworks */ = {isa = PBXBuildFile; productRef = A8F61DEF2C5A229F00AB406F /* CBAssistiveTouch */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +25,7 @@
 		A83605AD2C5A10BF00543D05 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		A83605AF2C5A10BF00543D05 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A83605BA2C5A17D100543D05 /* CBConsoleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CBConsoleViewController.swift; sourceTree = "<group>"; };
+		A8F61DEE2C5A228000AB406F /* CBAssistiveTouch */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = CBAssistiveTouch; path = ..; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -32,7 +33,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A83605B72C5A12E500543D05 /* CBAssistiveTouch in Frameworks */,
+				A8F61DF02C5A229F00AB406F /* CBAssistiveTouch in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,6 +45,7 @@
 			children = (
 				A83605A02C5A10BE00543D05 /* Example */,
 				A836059F2C5A10BE00543D05 /* Products */,
+				A8F61DED2C5A228000AB406F /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -69,6 +71,14 @@
 			path = Example;
 			sourceTree = "<group>";
 		};
+		A8F61DED2C5A228000AB406F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				A8F61DEE2C5A228000AB406F /* CBAssistiveTouch */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -86,7 +96,7 @@
 			);
 			name = Example;
 			packageProductDependencies = (
-				A83605B62C5A12E500543D05 /* CBAssistiveTouch */,
+				A8F61DEF2C5A229F00AB406F /* CBAssistiveTouch */,
 			);
 			productName = Example;
 			productReference = A836059E2C5A10BE00543D05 /* Example.app */;
@@ -117,7 +127,6 @@
 			);
 			mainGroup = A83605952C5A10BE00543D05;
 			packageReferences = (
-				A83605B52C5A12E500543D05 /* XCRemoteSwiftPackageReference "CBAssistiveTouch" */,
 			);
 			productRefGroup = A836059F2C5A10BE00543D05 /* Products */;
 			projectDirPath = "";
@@ -364,21 +373,9 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		A83605B52C5A12E500543D05 /* XCRemoteSwiftPackageReference "CBAssistiveTouch" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/cardinalblue/CBAssistiveTouch";
-			requirement = {
-				branch = "build/migrate-spm";
-				kind = branch;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
 /* Begin XCSwiftPackageProductDependency section */
-		A83605B62C5A12E500543D05 /* CBAssistiveTouch */ = {
+		A8F61DEF2C5A229F00AB406F /* CBAssistiveTouch */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = A83605B52C5A12E500543D05 /* XCRemoteSwiftPackageReference "CBAssistiveTouch" */;
 			productName = CBAssistiveTouch;
 		};
 /* End XCSwiftPackageProductDependency section */
