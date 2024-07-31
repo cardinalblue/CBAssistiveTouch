@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import UIKit
 
 protocol AssistiveTouchWindowDelegate: AnyObject {
     func assistiveTouchWindowShouldPassthroughTouch(window: AssistiveTouchWindow, at: CGPoint) -> Bool?

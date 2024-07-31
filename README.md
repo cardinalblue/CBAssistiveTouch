@@ -1,9 +1,12 @@
 # CBAssistiveTouch
 
-A custom assistive button like system AssistiveTouch. 
+A custom assistive button like system AssistiveTouch.
 
 ## 🧰 Installation
+(Version 2.0.0 +)
+- Add via swift package manager
 
+(Legacy versions)
 - Set up [cardinalblue cocoapods private repo](https://github.com/cardinalblue/CocoaPodsSpecs)
 
 - `pod install CBAssistiveTouch`
@@ -13,7 +16,7 @@ A custom assistive button like system AssistiveTouch.
 #### Enable assistiveTouch.
 
 Create an assistiveTouch with custom layout and content on application window.
- 
+
 ```swift
 
 // AppDelegate.swift
@@ -21,8 +24,8 @@ Create an assistiveTouch with custom layout and content on application window.
 private lazy var assistiveTouch: AssistiveTouch = {
   let layout = DefaultAssitiveTouchLayout(keyWindow: self.window)
   let contentViewController = ViewController()
-  return AssistiveTouch(applicationWindow: window, 
-                                   layout: layout, 
+  return AssistiveTouch(applicationWindow: window,
+                                   layout: layout,
                     contentViewController: contentViewController)
 }()
 
@@ -68,4 +71,3 @@ public protocol AssitiveTouchLayout {
     return label
   }()
 ```
-
