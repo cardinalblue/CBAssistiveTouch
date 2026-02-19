@@ -1,7 +1,9 @@
 # Tuist
 
 Derived/
+.build
 Tuist/.build
+Demo/Tuist/.build
 Tuist/.swiftpm
 .swiftpm/
 

@@ -9,6 +9,16 @@
 import UIKit
 import Foundation
 
+protocol AssistiveTouchContentTransitioning: AnyObject {
+    func assistiveTouchWillPresentContent()
+    func assistiveTouchWillDismissContent()
+}
+
+extension AssistiveTouchContentTransitioning {
+    func assistiveTouchWillPresentContent() {}
+    func assistiveTouchWillDismissContent() {}
+}
+
 class AssistiveTouchViewController: UIViewController {
 
     unowned let assistiveTouchWindow: AssistiveTouchWindow
@@ -152,6 +162,7 @@ class AssistiveTouchViewController: UIViewController {
         guard let contentViewController = contentViewController else {
             return
         }
+        (contentViewController as? AssistiveTouchContentTransitioning)?.assistiveTouchWillPresentContent()
 
         if #available(iOS 13, *) {
             contentViewController.modalPresentationStyle = .fullScreen
@@ -166,6 +177,7 @@ class AssistiveTouchViewController: UIViewController {
     }
 
     func dismissContent() {
+        (presentedViewController as? AssistiveTouchContentTransitioning)?.assistiveTouchWillDismissContent()
         UIView.animate(withDuration: layout.animationDuration, animations: {
             self.sizeToFitContent(size: self.contentView.bounds.size,
                                   at: self.lastWindowPosition ?? self.assistiveTouchWindow.center)
