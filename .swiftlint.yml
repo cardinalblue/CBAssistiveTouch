@@ -1,0 +1,82 @@
+included:
+  - Demo
+
+analyzer_rules:
+  - unused_declaration
+  - unused_import
+
+disabled_rules:
+  - force_cast
+  - type_body_length
+  - file_length
+  - function_body_length
+  - todo
+  - private_over_fileprivate
+  - closure_parameter_position
+  - function_parameter_count
+  - block_based_kvo
+
+opt_in_rules:
+  - closure_spacing
+  - multiline_arguments
+  - multiline_arguments_brackets
+  - multiline_parameters
+  - multiline_parameters_brackets
+  - multiline_function_chains
+  - multiline_literal_brackets
+  - operator_usage_whitespace
+  - overridden_super_call
+  - period_spacing
+  - private_swiftui_state
+  - shorthand_optional_binding
+  - switch_case_on_newline
+  - vertical_parameter_alignment_on_call
+  - vertical_whitespace_between_cases
+  - vertical_whitespace_closing_braces
+  - vertical_whitespace_opening_braces
+  - array_init
+  - closure_end_indentation
+  - collection_alignment
+  - contains_over_first_not_nil
+  - empty_string
+  - empty_xctest_method
+  - first_where
+  - implicit_return
+  - joined_default_parameter
+  - legacy_random
+  - literal_expression_end_indentation
+  - lower_acl_than_parent
+  - override_in_extension
+  - private_action
+  - private_outlet
+  - prohibited_interface_builder
+  - prohibited_super_call
+  - redundant_nil_coalescing
+  - redundant_type_annotation
+  - yoda_condition
+
+cyclomatic_complexity:
+  warning: 25
+  error: 25
+  ignores_case_statements: true
+
+large_tuple:
+  warning: 4
+  error: 6
+
+identifier_name:
+  min_length: 0
+
+type_name:
+  min_length: 0
+
+nesting:
+  type_level:
+    warning: 2
+    error: 6
+  function_level:
+    warning: 5
+    error: 10
+
+line_length:
+  ignores_urls: true

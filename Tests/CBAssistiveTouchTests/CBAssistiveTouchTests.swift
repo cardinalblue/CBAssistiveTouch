@@ -1,7 +1,7 @@
 import XCTest
-@testable import CBAssistiveTouch
+@testable import Demo
 
-final class CBAssistiveTouchTests: XCTestCase {
+final class DemoTests: XCTestCase {
     func testExample() throws {
         // XCTest Documentation
         // https://developer.apple.com/documentation/xctest

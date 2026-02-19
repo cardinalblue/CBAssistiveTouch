@@ -1,0 +1,36 @@
+name: pr
+
+on:
+  pull_request:
+    types: [opened, edited]
+
+concurrency:
+  group: $-$
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: macos-15
+
+    env:
+        DANGER_GITHUB_API_TOKEN: $
+
+    steps:
+    - uses: webfactory/ssh-agent@v0.7.0
+      with:
+        ssh-private-key: $
+
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 100 # a random number to avoid danger failure. Ref: https://github.com/danger/danger/issues/768#issuecomment-398893158
+
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.0
+        bundler-cache: true
+
+    - name: Check PR title
+      run: |
+        bundle exec danger --dangerfile=Dangerfiles/check-pr-info.rb \
+                           --danger_id=check-pr-info \
+                           --remove-previous-comments
