@@ -20,7 +20,6 @@ extension AssistiveTouchContentTransitioning {
 }
 
 class AssistiveTouchViewController: UIViewController {
-
     unowned let assistiveTouchWindow: AssistiveTouchWindow
     let layout: AssistiveTouchLayout
     let contentViewController: UIViewController?
@@ -99,10 +98,12 @@ class AssistiveTouchViewController: UIViewController {
             let location = recognizer.location(in: view)
             let touch = Touch(identifier: "pan", point: location)
             manipulator?.touchesBegan([touch])
+
         case .changed:
             let location = recognizer.location(in: view)
             let touch = Touch(identifier: "pan", point: location)
             manipulator?.touchesMoved([touch])
+
         case .ended:
             let location = recognizer.location(in: view)
             let touch = Touch(identifier: "pan", point: location)
@@ -112,6 +113,7 @@ class AssistiveTouchViewController: UIViewController {
                 self.manipulator = nil
                 self.endDragging()
             })
+
         default:
             break
         }
@@ -147,7 +149,6 @@ class AssistiveTouchViewController: UIViewController {
             self.assistiveTouchWindow.frame = frame
         }
         manipulator.align(to: bounding)
-
     }
 
     func toggleContent() {
@@ -159,7 +160,7 @@ class AssistiveTouchViewController: UIViewController {
     }
 
     func presentContent() {
-        guard let contentViewController = contentViewController else {
+        guard let contentViewController else {
             return
         }
         (contentViewController as? AssistiveTouchContentTransitioning)?.assistiveTouchWillPresentContent()
@@ -221,7 +222,6 @@ class AssistiveTouchViewController: UIViewController {
         lastWindowPosition = assistiveTouchWindow.center
     }
 
-
     @objc private func keyboardWillChangeFrame(notification: Notification) {
         guard let keyboard = KeyboardNotification(notification) else {
             return
@@ -247,11 +247,12 @@ class AssistiveTouchViewController: UIViewController {
         case UIResponder.keyboardWillHideNotification:
             // Restore to lastWindowPosition
             newCenter = lastWindowPosition
+
         default:
             return
         }
 
-        if let newCenter = newCenter {
+        if let newCenter {
             UIView.animate(withDuration: keyboard.animationDuration,
                            delay: 0,
                            options: keyboard.animationOptions,
@@ -265,7 +266,6 @@ class AssistiveTouchViewController: UIViewController {
 }
 
 extension AssistiveTouchViewController: AssistiveTouchWindowDelegate {
-
     func assistiveTouchWindowShouldPassthroughTouch(window: AssistiveTouchWindow, at point: CGPoint) -> Bool? {
         if let passthroughable = presentedViewController as? ATPassthroughable,
             let presentedView = presentedViewController?.view {

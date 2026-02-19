@@ -18,15 +18,13 @@ struct Touch: Hashable {
     }
 
     static func == (lhs: Touch, rhs: Touch) -> Bool {
-        return lhs.identifier == rhs.identifier && lhs.point == rhs.point
+        lhs.identifier == rhs.identifier && lhs.point == rhs.point
     }
 }
 
 protocol TouchHandling {
-
     func touchesBegan(_ touches: Set<Touch>)
     func touchesMoved(_ touches: Set<Touch>)
     func touchesCancelled(_ touches: Set<Touch>)
     func touchesEnded(_ touches: Set<Touch>)
-
 }

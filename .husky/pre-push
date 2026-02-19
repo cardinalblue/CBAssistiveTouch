@@ -1,0 +1,91 @@
+#!/bin/bash
+
+BASE_BRANCH="${BASE_BRANCH:-master}"
+
+echo "Running SwiftLint in strict mode before push..."
+start_time=$(date +%s)
+
+if [ "$CI" = "true" ]; then
+  echo "Skipping SwiftLint in CI"
+  exit 0
+fi
+
+if [ "$SKIP_LINT" = "true" ]; then
+  echo "Skipping SwiftLint due to SKIP_LINT flag"
+  exit 0
+fi
+
+# Activate tools provided by mise shims.
+eval "$(mise activate bash --shims)"
+
+current_branch=$(git rev-parse --abbrev-ref HEAD)
+
+resolve_base_ref() {
+  if git rev-parse --verify --quiet "$BASE_BRANCH" >/dev/null; then
+    echo "$BASE_BRANCH"
+    return
+  fi
+
+  if git rev-parse --verify --quiet "origin/$BASE_BRANCH" >/dev/null; then
+    echo "origin/$BASE_BRANCH"
+    return
+  fi
+
+  remote_default_branch=$(git symbolic-ref --quiet refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')
+  if [ -n "$remote_default_branch" ]; then
+    if git rev-parse --verify --quiet "$remote_default_branch" >/dev/null; then
+      echo "$remote_default_branch"
+      return
+    fi
+    if git rev-parse --verify --quiet "origin/$remote_default_branch" >/dev/null; then
+      echo "origin/$remote_default_branch"
+      return
+    fi
+  fi
+
+  echo ""
+}
+
+base_ref=$(resolve_base_ref)
+base_ref_branch="${base_ref#origin/}"
+
+if [ "$current_branch" = "$BASE_BRANCH" ] || [ -n "$base_ref_branch" ] && [ "$current_branch" = "$base_ref_branch" ]; then
+  echo "On base branch ($current_branch), scanning all files..."
+  lint_command="swiftlint --strict --quiet"
+  fix_command="swiftlint --fix --quiet"
+elif [ -z "$base_ref" ]; then
+  echo "Unable to resolve base branch ($BASE_BRANCH). Scanning all files..."
+  lint_command="swiftlint --strict --quiet"
+  fix_command="swiftlint --fix --quiet"
+else
+  echo "On feature branch ($current_branch), scanning changed files against $base_ref..."
+
+  changed_files=$(git diff --name-only --diff-filter=ACM "$base_ref"...HEAD -- '*.swift' | tr '\n' ' ')
+
+  if [ -z "$changed_files" ]; then
+    echo "No Swift files changed, skipping SwiftLint"
+    exit 0
+  fi
+
+  echo "Scanning files: $changed_files"
+  lint_command="swiftlint --strict --quiet $changed_files"
+  fix_command="swiftlint --fix --quiet $changed_files"
+fi
+
+if ! eval "$lint_command"; then
+  echo "SwiftLint found violations. Attempting autofix..."
+  eval "$fix_command"
+  echo "Fixes applied. Review, stage, and push again."
+
+  end_time=$(date +%s)
+  duration=$((end_time - start_time))
+  echo "SwiftLint completed in ${duration}s"
+  exit 1
+fi
+
+end_time=$(date +%s)
+duration=$((end_time - start_time))
+echo "No SwiftLint violations. Proceeding with push."
+echo "SwiftLint completed in ${duration}s"
+
+exit 0

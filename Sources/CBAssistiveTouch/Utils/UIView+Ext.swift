@@ -9,12 +9,10 @@
 import UIKit
 
 extension UIView {
-
     var cbat_safeAreaInsetCompatible: UIEdgeInsets {
         if #available(iOS 11.0, *) {
             return safeAreaInsets
         }
         return UIEdgeInsets.zero
     }
-
 }

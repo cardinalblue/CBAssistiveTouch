@@ -84,10 +84,13 @@ public final class CBLoggerWindow {
         case .toggleRequested:
             toggleContent()
             onAction?(.toggleRequested)
+
         case .logCountChanged(let count):
             onAction?(.logCountChanged(count))
+
         case .clearRequested:
             onAction?(.clearRequested)
+
         case .resetRequested:
             onAction?(.resetRequested)
         }

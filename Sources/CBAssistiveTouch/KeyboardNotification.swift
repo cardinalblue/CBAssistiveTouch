@@ -20,7 +20,6 @@ import Foundation
 /// - UIKeyboardAnimationCurveUserInfoKey
 
 public struct KeyboardNotification {
-
     static let validNotificationNames: [Notification.Name] = [
         UIResponder.keyboardWillShowNotification,
         UIResponder.keyboardDidShowNotification,
@@ -83,7 +82,7 @@ public struct KeyboardNotification {
     /// :param: view UIView to whose coordinate system the frame will be converted
     /// :returns: frame rectangle in view's coordinate system
     public func frameBeginForView(view: UIView) -> CGRect {
-        return view.convert(beginFrame, from: view.window)
+        view.convert(beginFrame, from: view.window)
     }
 
     /// End frame of the keyboard in coordinates of specified view
@@ -91,6 +90,6 @@ public struct KeyboardNotification {
     /// :param: view UIView to whose coordinate system the frame will be converted
     /// :returns: frame rectangle in view's coordinate system
     public func frameEndForView(view: UIView) -> CGRect {
-        return view.convert(endFrame, from: view.window)
+        view.convert(endFrame, from: view.window)
     }
 }

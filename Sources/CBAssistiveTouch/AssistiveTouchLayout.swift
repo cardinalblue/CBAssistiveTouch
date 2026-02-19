@@ -10,25 +10,22 @@ import Foundation
 import UIKit
 
 public protocol AssistiveTouchLayout {
-
     var safeAreaInsets: UIEdgeInsets { get }
     var customView: UIView? { get }
     var margin: CGFloat { get }
     var animationDuration: TimeInterval { get }
     var assistiveTouchSize: CGSize { get }
     var assistiveTouchInitialPosition: CGPoint { get }
-
 }
 
 public class DefaultAssistiveTouchLayout: AssistiveTouchLayout {
-
-    public var customView: UIView? = nil
+    public var customView: UIView?
 
     public var animationDuration: TimeInterval = 0.25
 
     public var margin: CGFloat = 20
 
-    public var assistiveTouchSize: CGSize = CGSize(width: 60, height: 60)
+    public var assistiveTouchSize = CGSize(width: 60, height: 60)
 
     public var assistiveTouchInitialPosition: CGPoint {
         let screen = UIScreen.main.bounds
@@ -45,5 +42,4 @@ public class DefaultAssistiveTouchLayout: AssistiveTouchLayout {
         let safeAreaInsets = applicationWindow?.cbat_safeAreaInsetCompatible ?? .zero
         self.init(safeAreaInsets: safeAreaInsets)
     }
-
 }

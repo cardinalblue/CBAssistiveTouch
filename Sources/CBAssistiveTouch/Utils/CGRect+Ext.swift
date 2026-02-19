@@ -10,15 +10,12 @@ import UIKit
 import Foundation
 
 extension CGPoint {
-
     var magnitude2: CGFloat {
-        return x * x + y * y
+        x * x + y * y
     }
-
 }
 
 extension CGRect {
-
     enum Edge: CaseIterable {
         case top
         case left
@@ -34,18 +31,25 @@ extension CGRect {
         switch edge {
         case .top:
             return CGPoint(x: 0, y: rect.minY - minY)
+
         case .left:
             return CGPoint(x: rect.minX - minX, y: 0)
+
         case .bottom:
-            return CGPoint(x: 0, y:  rect.maxY - maxY)
+            return CGPoint(x: 0, y: rect.maxY - maxY)
+
         case .right:
             return CGPoint(x: rect.maxX - maxX, y: 0)
+
         case .topLeft:
             return CGPoint(x: rect.minX - minX, y: rect.minY - minY)
+
         case .topRight:
             return CGPoint(x: rect.maxX - maxX, y: rect.minY - minY)
+
         case .bottomLeft:
             return CGPoint(x: rect.minX - minX, y: rect.maxY - maxY)
+
         case .bottomRight:
             return CGPoint(x: rect.maxX - maxX, y: rect.maxY - maxY)
         }
@@ -71,5 +75,4 @@ extension CGRect {
         }
         return info.translation
     }
-
 }

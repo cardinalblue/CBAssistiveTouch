@@ -14,14 +14,12 @@ protocol AssistiveTouchWindowDelegate: AnyObject {
 }
 
 class AssistiveTouchWindow: UIWindow {
-
     weak var delegate: AssistiveTouchWindowDelegate?
 
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        if let delegate = delegate, let shouldPassthrough = delegate.assistiveTouchWindowShouldPassthroughTouch(window: self, at: point) {
+        if let delegate, let shouldPassthrough = delegate.assistiveTouchWindowShouldPassthroughTouch(window: self, at: point) {
             return shouldPassthrough ? false : true
         }
         return super.point(inside: point, with: event)
     }
-
 }

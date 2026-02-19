@@ -26,6 +26,10 @@ Tuist/.swiftpm
 
 .env.secret
 
+# Node.js
+
+node_modules/
+
 # fastlane
 
 fastlane/report.xml

@@ -28,20 +28,19 @@ enum Quadrant {
         let axesOrigin = CGPoint(x: bounding.minX + bounding.width / 2,
                                  y: bounding.minY + bounding.height / 2)
         // I, IV
-        if (point.x >= axesOrigin.x) {
-            if (point.y <= axesOrigin.y) {
+        if point.x >= axesOrigin.x {
+            if point.y <= axesOrigin.y {
                 self = .I
             } else {
                 self = .IV
             }
             // II, III
         } else {
-            if (point.y <= axesOrigin.y) {
+            if point.y <= axesOrigin.y {
                 self = .II
             } else {
                 self = .III
             }
         }
     }
-
 }

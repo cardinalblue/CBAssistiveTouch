@@ -10,7 +10,6 @@ import UIKit
 import Foundation
 
 class AssistiveTouchManipulator {
-
     var itemFrame: CGRect {
         didSet {
             onChange?(itemFrame)
@@ -21,7 +20,7 @@ class AssistiveTouchManipulator {
     private var prevPoint: CGPoint?
     private var center: CGPoint {
         get {
-            return CGPoint(x: itemFrame.midX, y: itemFrame.midY)
+            CGPoint(x: itemFrame.midX, y: itemFrame.midY)
         }
         set {
             var newFrame = itemFrame
@@ -39,7 +38,7 @@ class AssistiveTouchManipulator {
     }
 
     private func move(with touches: Set<Touch>) {
-        guard let touch = touches.first, let prevPoint = prevPoint else {
+        guard let touch = touches.first, let prevPoint else {
             assert(false, "Invaild state, no touch or previous point")
             return
         }
@@ -49,7 +48,6 @@ class AssistiveTouchManipulator {
         center = CGPoint(x: center.x + offsetX, y: center.y + offsetY)
         self.prevPoint = currentPoint
     }
-
 
     /// Align item to edge
     /// 1. Move the box inside of bouding box.
@@ -81,7 +79,6 @@ class AssistiveTouchManipulator {
 }
 
 extension AssistiveTouchManipulator: TouchHandling {
-
     func touchesBegan(_ touches: Set<Touch>) {
         guard let touch = touches.first else {
             assert(false, "touch can not be nil")
@@ -103,5 +100,4 @@ extension AssistiveTouchManipulator: TouchHandling {
         move(with: touches)
         align(to: bounding)
     }
-
 }

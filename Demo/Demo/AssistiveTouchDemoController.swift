@@ -29,7 +29,7 @@ final class AssistiveTouchDemoController: ObservableObject {
         guard loggerWindowController == nil else {
             return
         }
-        guard let window = UIApplication.shared.cbat_keyWindow else {
+        guard let window = UIApplication.shared.cbatKeyWindow else {
             return
         }
 
@@ -49,11 +49,14 @@ final class AssistiveTouchDemoController: ObservableObject {
             switch action {
             case .toggleRequested:
                 break
+
             case .logCountChanged(let newCount):
                 self.logCount = newCount
+
             case .clearRequested:
                 self.lastEvent = "Logs cleared"
                 self.logCount = 0
+
             case .resetRequested:
                 self.resetDemoState()
             }
@@ -125,7 +128,7 @@ final class AssistiveTouchDemoController: ObservableObject {
 }
 
 private extension UIApplication {
-    var cbat_keyWindow: UIWindow? {
+    var cbatKeyWindow: UIWindow? {
         connectedScenes
             .compactMap { $0 as? UIWindowScene }
             .flatMap(\.windows)

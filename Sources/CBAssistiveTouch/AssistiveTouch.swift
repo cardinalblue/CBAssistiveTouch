@@ -10,11 +10,10 @@ import UIKit
 import Foundation
 
 public class AssistiveTouch {
-
     let contentViewController: UIViewController?
 
     private var assistiveTouchViewController: AssistiveTouchViewController {
-        return window.rootViewController as! AssistiveTouchViewController
+        window.rootViewController as! AssistiveTouchViewController
     }
 
     private lazy var window: AssistiveTouchWindow = {

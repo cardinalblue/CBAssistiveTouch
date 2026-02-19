@@ -91,7 +91,7 @@ extension Project {
                    ],
                    xcconfig: nil
                )
-           ],
+            ],
            defaultSettings: .recommended
         )
     }

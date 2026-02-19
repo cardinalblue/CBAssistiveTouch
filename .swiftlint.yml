@@ -1,5 +1,6 @@
 included:
   - Demo
+  - Sources
 
 analyzer_rules:
   - unused_declaration
