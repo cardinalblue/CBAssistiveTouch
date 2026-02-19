@@ -6,7 +6,7 @@
 //  Copyright © 2026 Cardinal Blue. All rights reserved.
 //
 
-import CBAssistiveTouch
+import CBLoggerWindow
 import UIKit
 
 @MainActor
@@ -15,8 +15,7 @@ final class AssistiveTouchDemoController: ObservableObject {
     @Published private(set) var logCount = 0
     @Published private(set) var lastEvent = "No events yet"
 
-    private var assistiveTouch: AssistiveTouch?
-    private weak var consoleViewController: CBConsoleViewController?
+    private var loggerWindowController: CBLoggerWindow?
     private var sampleIndex = 0
 
     private let sampleEvents = [
@@ -27,26 +26,29 @@ final class AssistiveTouchDemoController: ObservableObject {
     ]
 
     func configureIfNeeded() {
-        guard assistiveTouch == nil else {
+        guard loggerWindowController == nil else {
             return
         }
         guard let window = UIApplication.shared.cbat_keyWindow else {
             return
         }
 
-        let consoleViewController = CBConsoleViewController()
-        consoleViewController.preferredContentSize = CGSize(
-            width: max(280, window.bounds.width - 32),
-            height: 320
+        let loggerWindowController = CBLoggerWindow(
+            applicationWindow: window,
+            preferredContentSize: CGSize(
+                width: max(280, window.bounds.width - 32),
+                height: 320
+            ),
+            margin: 16
         )
-        consoleViewController.onAction = { [weak self] action in
+        loggerWindowController.onAction = { [weak self] action in
             guard let self else {
                 return
             }
 
             switch action {
             case .toggleRequested:
-                self.toggleConsole()
+                break
             case .logCountChanged(let newCount):
                 self.logCount = newCount
             case .clearRequested:
@@ -56,41 +58,25 @@ final class AssistiveTouchDemoController: ObservableObject {
                 self.resetDemoState()
             }
         }
-        _ = consoleViewController.view
 
-        let layout = DefaultAssistiveTouchLayout(applicationWindow: window)
-        layout.margin = 16
-        layout.customView = Self.makeFloatingToolView()
-        if let customView = layout.customView {
-            layout.assistiveTouchSize = customView.bounds.size
-        }
-
-        let assistiveTouch = AssistiveTouch(
-            applicationWindow: window,
-            layout: layout,
-            contentViewController: consoleViewController
-        )
-
-        self.assistiveTouch = assistiveTouch
-        self.consoleViewController = consoleViewController
-
-        assistiveTouch.show()
+        self.loggerWindowController = loggerWindowController
+        loggerWindowController.show()
         isAssistiveTouchVisible = true
         appendInitialLogsIfNeeded()
     }
 
     func toggleAssistiveTouch() {
         configureIfNeeded()
-        guard let assistiveTouch else {
+        guard let loggerWindowController else {
             return
         }
-        assistiveTouch.toggle()
+        loggerWindowController.toggle()
         isAssistiveTouchVisible.toggle()
     }
 
     func toggleConsole() {
         configureIfNeeded()
-        assistiveTouch?.toggleContent()
+        loggerWindowController?.toggleContent()
     }
 
     func addLog(_ event: String) {
@@ -101,7 +87,7 @@ final class AssistiveTouchDemoController: ObservableObject {
             return
         }
 
-        consoleViewController?.log(event: sanitized)
+        loggerWindowController?.log(event: sanitized)
         lastEvent = sanitized
     }
 
@@ -125,7 +111,7 @@ final class AssistiveTouchDemoController: ObservableObject {
             "Drag the floating tool to reposition"
         ]
         if forceReplace {
-            consoleViewController?.replaceLogs(with: initialLogs)
+            loggerWindowController?.replaceLogs(with: initialLogs)
             logCount = initialLogs.count
             return
         }
@@ -133,34 +119,8 @@ final class AssistiveTouchDemoController: ObservableObject {
         guard logCount == 0 else {
             return
         }
-        initialLogs.forEach { consoleViewController?.log(event: $0) }
+        initialLogs.forEach { loggerWindowController?.log(event: $0) }
         lastEvent = initialLogs.last ?? lastEvent
-    }
-
-    private static func makeFloatingToolView() -> UIView {
-        let size = CGSize(width: 56, height: 56)
-        let container = UIView(frame: CGRect(origin: .zero, size: size))
-        container.backgroundColor = .clear
-        container.layer.cornerRadius = size.width / 2
-        container.layer.borderWidth = 1.5
-        container.layer.borderColor = UIColor.white.withAlphaComponent(0.8).cgColor
-        container.layer.shadowColor = UIColor.black.cgColor
-        container.layer.shadowOpacity = 0.25
-        container.layer.shadowRadius = 10
-        container.layer.shadowOffset = CGSize(width: 0, height: 4)
-
-        let imageView = UIImageView(image: UIImage(systemName: "apple.terminal"))
-        imageView.tintColor = .white
-        imageView.contentMode = .scaleAspectFit
-        imageView.frame = CGRect(
-            x: 15,
-            y: 15,
-            width: 26,
-            height: 26
-        )
-        container.addSubview(imageView)
-
-        return container
     }
 }
 

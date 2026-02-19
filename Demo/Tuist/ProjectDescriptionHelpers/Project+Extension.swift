@@ -148,7 +148,8 @@ extension Project {
 extension Project {
     public static func makeMainDependencies() -> [TargetDependency] {
         [
-            .external(name: "CBAssistiveTouch")
+            .external(name: "CBAssistiveTouch"),
+            .external(name: "CBLoggerWindow")
         ]
     }
 }
