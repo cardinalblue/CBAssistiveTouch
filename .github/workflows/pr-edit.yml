@@ -1,6 +1,11 @@
-name: pr
+name: pr-edit
 
-on: pull_request
+on:
+  pull_request:
+    types:
+      - edited
+      - labeled
+      - unlabeled
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -9,10 +14,6 @@ concurrency:
 jobs:
   check:
     runs-on: macos-15
-
-    env:
-        DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
     steps:
     - uses: webfactory/ssh-agent@v0.7.0
@@ -23,20 +24,15 @@ jobs:
       with:
         fetch-depth: 100 # a random number to avoid danger failure. Ref: https://github.com/danger/danger/issues/768#issuecomment-398893158
 
-    - uses: jdx/mise-action@v2
-
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: 3.3
         bundler-cache: true
 
     - name: Check PR title
+      env:
+        DANGER_GITHUB_API_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         bundle exec danger --dangerfile=Dangerfiles/check-pr-info.rb \
                            --danger_id=check-pr-info \
                            --remove-previous-comments
-    - name: Run Swiftlint
-      run: |
-        bundle exec danger --dangerfile=Dangerfiles/run-swiftlint.rb \
-                            --danger_id=run-swiftlint \
-                            --remove-previous-comments
