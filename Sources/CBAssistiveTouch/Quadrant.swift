@@ -9,10 +9,10 @@
 import Foundation
 
 enum Quadrant {
-    case I
-    case II
-    case III
-    case IV
+    case i
+    case ii
+    case iii
+    case iv
 
     init(point: CGPoint, bounding: CGRect) {
         // Cartesian coordinate system
@@ -25,21 +25,23 @@ enum Quadrant {
         //     III  |   IV
         //          |
         //          +
-        let axesOrigin = CGPoint(x: bounding.minX + bounding.width / 2,
-                                 y: bounding.minY + bounding.height / 2)
+        let axesOrigin = CGPoint(
+            x: bounding.minX + bounding.width / 2,
+            y: bounding.minY + bounding.height / 2
+        )
         // I, IV
         if point.x >= axesOrigin.x {
             if point.y <= axesOrigin.y {
-                self = .I
+                self = .i
             } else {
-                self = .IV
+                self = .iv
             }
             // II, III
         } else {
             if point.y <= axesOrigin.y {
-                self = .II
+                self = .ii
             } else {
-                self = .III
+                self = .iii
             }
         }
     }

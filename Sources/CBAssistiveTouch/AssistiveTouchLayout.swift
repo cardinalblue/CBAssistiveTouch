@@ -39,7 +39,7 @@ public class DefaultAssistiveTouchLayout: AssistiveTouchLayout {
     }
 
     public convenience init(applicationWindow: UIWindow?) {
-        let safeAreaInsets = applicationWindow?.cbat_safeAreaInsetCompatible ?? .zero
+        let safeAreaInsets = applicationWindow?.cbatSafeAreaInsetCompatible ?? .zero
         self.init(safeAreaInsets: safeAreaInsets)
     }
 }

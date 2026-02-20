@@ -41,7 +41,11 @@ class AssistiveTouchViewController: UIViewController {
 
     // MARK: Object lifecycle
 
-    init(assistiveTouchWindow: AssistiveTouchWindow, layout: AssistiveTouchLayout, contentViewController: UIViewController?) {
+    init(
+        assistiveTouchWindow: AssistiveTouchWindow,
+        layout: AssistiveTouchLayout,
+        contentViewController: UIViewController?
+    ) {
         self.assistiveTouchWindow = assistiveTouchWindow
         self.layout = layout
         self.contentViewController = contentViewController
@@ -49,14 +53,18 @@ class AssistiveTouchViewController: UIViewController {
 
         self.assistiveTouchWindow.delegate = self
 
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(keyboardWillChangeFrame(notification:)),
-                                               name: UIResponder.keyboardWillShowNotification,
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(keyboardWillChangeFrame(notification:)),
-                                               name: UIResponder.keyboardWillHideNotification,
-                                               object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillChangeFrame(notification:)),
+            name: UIResponder.keyboardWillShowNotification,
+            object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(keyboardWillChangeFrame(notification:)),
+            name: UIResponder.keyboardWillHideNotification,
+            object: nil
+        )
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -88,10 +96,12 @@ class AssistiveTouchViewController: UIViewController {
         switch recognizer.state {
         case .began:
             beginDragging()
-            let bounding = assistiveTouchWindow.bounds.inset(by: assistiveTouchWindow.cbat_safeAreaInsetCompatible)
+            let bounding = assistiveTouchWindow.bounds.inset(by: assistiveTouchWindow.cbatSafeAreaInsetCompatible)
                                                       .insetBy(dx: layout.margin, dy: layout.margin)
-            manipulator = AssistiveTouchManipulator(itemFrame: presentingView.frame,
-                                                    bounding: bounding)
+            manipulator = AssistiveTouchManipulator(
+                itemFrame: presentingView.frame,
+                bounding: bounding
+            )
             manipulator?.onChange = { [unowned self] frame in
                 self.presentingView.frame = frame
             }
@@ -107,12 +117,16 @@ class AssistiveTouchViewController: UIViewController {
         case .ended:
             let location = recognizer.location(in: view)
             let touch = Touch(identifier: "pan", point: location)
-            UIView.animate(withDuration: layout.animationDuration, animations: {
-                self.manipulator?.touchesEnded([touch])
-            }, completion: { _ in
-                self.manipulator = nil
-                self.endDragging()
-            })
+            UIView.animate(
+                withDuration: layout.animationDuration,
+                animations: {
+                    self.manipulator?.touchesEnded([touch])
+                },
+                completion: { _ in
+                    self.manipulator = nil
+                    self.endDragging()
+                }
+            )
 
         default:
             break
@@ -143,8 +157,10 @@ class AssistiveTouchViewController: UIViewController {
 
         let bounding = UIScreen.main.bounds.inset(by: layout.safeAreaInsets)
                                            .insetBy(dx: layout.margin, dy: layout.margin)
-        let manipulator = AssistiveTouchManipulator(itemFrame: assistiveTouchWindow.frame,
-                                                    bounding: bounding)
+        let manipulator = AssistiveTouchManipulator(
+            itemFrame: assistiveTouchWindow.frame,
+            bounding: bounding
+        )
         manipulator.onChange = { [unowned self] frame in
             self.assistiveTouchWindow.frame = frame
         }
@@ -179,14 +195,20 @@ class AssistiveTouchViewController: UIViewController {
 
     func dismissContent() {
         (presentedViewController as? AssistiveTouchContentTransitioning)?.assistiveTouchWillDismissContent()
-        UIView.animate(withDuration: layout.animationDuration, animations: {
-            self.sizeToFitContent(size: self.contentView.bounds.size,
-                                  at: self.lastWindowPosition ?? self.assistiveTouchWindow.center)
-        }, completion: { _ in
-            self.dismiss(animated: false) {
-                self.sizeToFitContent(size: self.contentSize, at: self.assistiveTouchWindow.center)
+        UIView.animate(
+            withDuration: layout.animationDuration,
+            animations: {
+                self.sizeToFitContent(
+                    size: self.contentView.bounds.size,
+                    at: self.lastWindowPosition ?? self.assistiveTouchWindow.center
+                )
+            },
+            completion: { _ in
+                self.dismiss(animated: false) {
+                    self.sizeToFitContent(size: self.contentSize, at: self.assistiveTouchWindow.center)
+                }
             }
-        })
+        )
     }
 
     // MARK: Dragging
@@ -241,8 +263,10 @@ class AssistiveTouchViewController: UIViewController {
             // The keyboard will cover the assisitveTouch.
             // Shift it alongs with the keyboard.
             lastWindowPosition = assistiveTouchWindow.center
-            newCenter = CGPoint(x: assistiveTouchWindow.center.x,
-                                y: assistiveTouchWindow.center.y - layout.margin - yOffset)
+            newCenter = CGPoint(
+                x: assistiveTouchWindow.center.x,
+                y: assistiveTouchWindow.center.y - layout.margin - yOffset
+            )
         // Hide keyboard
         case UIResponder.keyboardWillHideNotification:
             // Restore to lastWindowPosition
@@ -253,14 +277,16 @@ class AssistiveTouchViewController: UIViewController {
         }
 
         if let newCenter {
-            UIView.animate(withDuration: keyboard.animationDuration,
-                           delay: 0,
-                           options: keyboard.animationOptions,
-                           animations: {
-                            target.center = newCenter
-            },
-                           completion: { _ in
-            })
+            UIView.animate(
+                withDuration: keyboard.animationDuration,
+                delay: 0,
+                options: keyboard.animationOptions,
+                animations: {
+                    target.center = newCenter
+                },
+                completion: { _ in
+                }
+            )
         }
     }
 }
