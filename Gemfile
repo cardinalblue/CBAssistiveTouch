@@ -7,6 +7,7 @@ gem 'octokit'
 gem 'git'
 gem 'colorize'
 gem 'danger'
+gem 'danger-swiftlint'
 
 gem 'abbrev'
 gem 'logger'
