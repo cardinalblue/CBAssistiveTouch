@@ -228,14 +228,13 @@ private struct CBLoggerToolbarView: View {
     var body: some View {
         HStack(spacing: 8) {
             closeButton(action: onToggle)
+            clearButton(action: onClear)
 
             Text("Logger Console")
                 .font(.system(size: 12, weight: .semibold))
                 .foregroundStyle(.white.opacity(0.85))
 
             Spacer(minLength: 8)
-
-            toolbarButton("CLEAR", action: onClear)
 
             ForEach(actions.indices, id: \.self) { index in
                 toolbarButton(actions[index].title, action: actions[index].handler)
@@ -247,15 +246,31 @@ private struct CBLoggerToolbarView: View {
     }
 
     private func closeButton(action: @escaping () -> Void) -> some View {
+        trafficLightButton(color: Color(red: 1.0, green: 0.37, blue: 0.34), action: action) {
+            Image(systemName: "xmark")
+                .font(.system(size: 8, weight: .bold))
+                .foregroundStyle(Color(red: 0.5, green: 0.0, blue: 0.0))
+        }
+    }
+
+    private func clearButton(action: @escaping () -> Void) -> some View {
+        trafficLightButton(color: Color(red: 1.0, green: 0.74, blue: 0.18), action: action) {
+            Image(systemName: "eraser.fill")
+                .font(.system(size: 8, weight: .bold))
+                .foregroundStyle(Color(red: 0.6, green: 0.4, blue: 0.0))
+        }
+    }
+
+    private func trafficLightButton<Icon: View>(
+        color: Color,
+        action: @escaping () -> Void,
+        @ViewBuilder icon: () -> Icon
+    ) -> some View {
         Button(action: action) {
             Circle()
-                .fill(Color(red: 1.0, green: 0.37, blue: 0.34)) // #FF5F57 macOS close red
+                .fill(color)
                 .frame(width: 16, height: 16)
-                .overlay {
-                    Image(systemName: "xmark")
-                        .font(.system(size: 8, weight: .bold))
-                        .foregroundStyle(.white.opacity(0.8))
-                }
+                .overlay { icon() }
         }
         .buttonStyle(.plain)
     }
