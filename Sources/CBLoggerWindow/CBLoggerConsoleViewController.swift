@@ -56,7 +56,6 @@ final class CBLoggerConsoleViewController: UIViewController {
         setUpBindings()
     }
 
-
     private func setUpBindings() {
         entries = logger.entries
 
@@ -75,7 +74,7 @@ final class CBLoggerConsoleViewController: UIViewController {
     }
 
     private func setUpTopBar() {
-        toolBarView.backgroundColor = UIColor.white.withAlphaComponent(0.12)
+        toolBarView.backgroundColor = UIColor.white.withAlphaComponent(0.2)
         toolBarView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(toolBarView)
 
@@ -149,7 +148,6 @@ final class CBLoggerConsoleViewController: UIViewController {
         logger.clear()
         onEvent?(.clearRequested)
     }
-
 
     private func update(entries: [String], scrollToBottom: Bool) {
         guard let dataSource, isViewLoaded else {
@@ -296,7 +294,7 @@ private struct CBLoggerToolbarView: View {
             .foregroundStyle(.white)
             .padding(.horizontal, 8)
             .frame(height: 20)
-            .background(Color.white.opacity(0.4))
+            .background(Color.white.opacity(0.15))
             .clipShape(RoundedRectangle(cornerRadius: 10, style: .continuous))
     }
 }
