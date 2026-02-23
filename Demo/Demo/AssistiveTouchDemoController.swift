@@ -41,6 +41,9 @@ final class AssistiveTouchDemoController: ObservableObject {
             ),
             margin: 16,
             actions: [
+                CBLoggerWindow.Action(title: "SPAM") { [weak self] in
+                    self?.spamLogs()
+                },
                 CBLoggerWindow.Action(title: "RESET") { [weak self] in
                     self?.resetDemoState()
                 }
@@ -100,6 +103,12 @@ final class AssistiveTouchDemoController: ObservableObject {
         let event = sampleEvents[sampleIndex % sampleEvents.count]
         sampleIndex += 1
         addLog(event, params: ["index": sampleIndex])
+    }
+
+    func spamLogs() {
+        for i in 1...10 {
+            addLog("Spam log entry", params: ["i": i])
+        }
     }
 
     func resetDemoState() {
