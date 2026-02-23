@@ -39,14 +39,19 @@ final class AssistiveTouchDemoController: ObservableObject {
                 width: max(280, window.bounds.width - 32),
                 height: 320
             ),
-            margin: 16
+            margin: 16,
+            actions: [
+                CBLoggerWindow.Action(title: "RESET") { [weak self] in
+                    self?.resetDemoState()
+                }
+            ]
         )
-        loggerWindowController.onAction = { [weak self] action in
+        loggerWindowController.onEvent = { [weak self] event in
             guard let self else {
                 return
             }
 
-            switch action {
+            switch event {
             case .toggleRequested:
                 break
 
@@ -56,9 +61,6 @@ final class AssistiveTouchDemoController: ObservableObject {
             case .clearRequested:
                 self.lastEvent = "Logs cleared"
                 self.logCount = 0
-
-            case .resetRequested:
-                self.resetDemoState()
             }
         }
 

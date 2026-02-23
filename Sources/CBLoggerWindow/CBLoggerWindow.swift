@@ -3,14 +3,34 @@ import UIKit
 
 @MainActor
 public final class CBLoggerWindow {
-    public enum Action {
+    /// An event emitted by CBLoggerWindow to notify the caller of internal state changes.
+    public enum Event {
         case toggleRequested
         case logCountChanged(Int)
         case clearRequested
-        case resetRequested
     }
 
-    public var onAction: ((Action) -> Void)?
+    /// A custom action button displayed in the logger console toolbar.
+    ///
+    /// Use this to add app-specific buttons alongside the built-in CLEAR and HIDE buttons.
+    ///
+    /// ```swift
+    /// let resetAction = CBLoggerWindow.Action(title: "RESET") {
+    ///     // restore defaults
+    /// }
+    /// let window = CBLoggerWindow(applicationWindow: appWindow, actions: [resetAction])
+    /// ```
+    public struct Action {
+        public let title: String
+        public let handler: () -> Void
+
+        public init(title: String, handler: @escaping @MainActor () -> Void) {
+            self.title = title
+            self.handler = handler
+        }
+    }
+
+    public var onEvent: ((Event) -> Void)?
     public private(set) var isVisible = false
 
     private let assistiveTouch: AssistiveTouch
@@ -21,12 +41,16 @@ public final class CBLoggerWindow {
         applicationWindow: UIWindow,
         preferredContentSize: CGSize? = nil,
         margin: CGFloat = 16,
-        floatingToolView: UIView? = nil
+        floatingToolView: UIView? = nil,
+        actions: [Action] = []
     ) {
         let resolvedLogger = CBInMemoryLogger()
         self.logger = resolvedLogger
 
-        let consoleViewController = CBLoggerConsoleViewController(logger: resolvedLogger)
+        let consoleViewController = CBLoggerConsoleViewController(
+            logger: resolvedLogger,
+            actions: actions
+        )
         consoleViewController.preferredContentSize = preferredContentSize ?? CGSize(
             width: max(280, applicationWindow.bounds.width - 32),
             height: 320
@@ -46,8 +70,8 @@ public final class CBLoggerWindow {
             contentViewController: consoleViewController
         )
 
-        consoleViewController.onAction = { [weak self] action in
-            self?.handleConsoleAction(action)
+        consoleViewController.onEvent = { [weak self] event in
+            self?.handleConsoleEvent(event)
         }
         _ = consoleViewController.view
     }
@@ -79,20 +103,17 @@ public final class CBLoggerWindow {
         logger.replaceAll(with: events)
     }
 
-    private func handleConsoleAction(_ action: CBLoggerConsoleViewController.Action) {
-        switch action {
+    private func handleConsoleEvent(_ event: CBLoggerConsoleViewController.Event) {
+        switch event {
         case .toggleRequested:
             toggleContent()
-            onAction?(.toggleRequested)
+            onEvent?(.toggleRequested)
 
         case .logCountChanged(let count):
-            onAction?(.logCountChanged(count))
+            onEvent?(.logCountChanged(count))
 
         case .clearRequested:
-            onAction?(.clearRequested)
-
-        case .resetRequested:
-            onAction?(.resetRequested)
+            onEvent?(.clearRequested)
         }
     }
 

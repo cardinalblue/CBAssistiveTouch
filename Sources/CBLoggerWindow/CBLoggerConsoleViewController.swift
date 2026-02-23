@@ -4,11 +4,10 @@ import SwiftUI
 import UIKit
 
 final class CBLoggerConsoleViewController: UIViewController {
-    enum Action {
+    enum Event {
         case toggleRequested
         case logCountChanged(Int)
         case clearRequested
-        case resetRequested
     }
 
     private enum Section {
@@ -20,9 +19,10 @@ final class CBLoggerConsoleViewController: UIViewController {
         let text: String
     }
 
-    var onAction: ((Action) -> Void)?
+    var onEvent: ((Event) -> Void)?
 
     private let logger: CBLogger
+    private let actions: [CBLoggerWindow.Action]
     @Published private var entries: [String] = []
     private var subscriptions = Set<AnyCancellable>()
 
@@ -33,8 +33,9 @@ final class CBLoggerConsoleViewController: UIViewController {
 
     private let toolbarHeight: CGFloat = 30
 
-    init(logger: CBLogger) {
+    init(logger: CBLogger, actions: [CBLoggerWindow.Action] = []) {
         self.logger = logger
+        self.actions = actions
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -72,7 +73,7 @@ final class CBLoggerConsoleViewController: UIViewController {
             guard let self else {
                 return
             }
-            onAction?(.logCountChanged(entries.count))
+            onEvent?(.logCountChanged(entries.count))
             update(entries: entries, scrollToBottom: true)
         }
         .store(in: &subscriptions)
@@ -94,8 +95,8 @@ final class CBLoggerConsoleViewController: UIViewController {
         view.addSubview(toolBarView)
 
         let toolbarView = CBLoggerToolbarView(
+            actions: actions,
             onClear: { [weak self] in self?.handleClearButtonPressed() },
-            onReset: { [weak self] in self?.handleResetButtonPressed() },
             onToggle: { [weak self] in self?.handleToggleButtonPressed() }
         )
 
@@ -134,17 +135,13 @@ final class CBLoggerConsoleViewController: UIViewController {
         view.addSubview(tableView)
     }
 
-    private func handleResetButtonPressed() {
-        onAction?(.resetRequested)
-    }
-
     private func handleToggleButtonPressed() {
-        onAction?(.toggleRequested)
+        onEvent?(.toggleRequested)
     }
 
     private func handleClearButtonPressed() {
         logger.clear()
-        onAction?(.clearRequested)
+        onEvent?(.clearRequested)
     }
 
     private func update(entries: [String], scrollToBottom: Bool) {
@@ -224,8 +221,8 @@ private final class CBLoggerCell: UITableViewCell {
 }
 
 private struct CBLoggerToolbarView: View {
+    let actions: [CBLoggerWindow.Action]
     let onClear: () -> Void
-    let onReset: () -> Void
     let onToggle: () -> Void
 
     var body: some View {
@@ -237,7 +234,11 @@ private struct CBLoggerToolbarView: View {
             Spacer(minLength: 8)
 
             toolbarButton("CLEAR", action: onClear)
-            toolbarButton("RESET", action: onReset)
+
+            ForEach(actions.indices, id: \.self) { index in
+                toolbarButton(actions[index].title, action: actions[index].handler)
+            }
+
             toolbarButton("HIDE", action: onToggle)
         }
         .padding(.horizontal, 8)
