@@ -84,7 +84,7 @@ final class AssistiveTouchDemoController: ObservableObject {
         loggerWindowController?.toggleContent()
     }
 
-    func addLog(_ event: String) {
+    func addLog(_ event: String, params: [String: Any]? = nil) {
         configureIfNeeded()
 
         let sanitized = event.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -92,14 +92,14 @@ final class AssistiveTouchDemoController: ObservableObject {
             return
         }
 
-        loggerWindowController?.log(event: sanitized)
+        loggerWindowController?.log(event: sanitized, parameters: params)
         lastEvent = sanitized
     }
 
     func logSampleEvent() {
         let event = sampleEvents[sampleIndex % sampleEvents.count]
         sampleIndex += 1
-        addLog(event)
+        addLog(event, params: ["index": sampleIndex])
     }
 
     func resetDemoState() {
