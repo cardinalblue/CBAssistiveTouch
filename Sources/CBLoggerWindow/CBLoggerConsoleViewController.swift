@@ -227,9 +227,11 @@ private struct CBLoggerToolbarView: View {
 
     var body: some View {
         HStack(spacing: 8) {
+            closeButton(action: onToggle)
+
             Text("Logger Console")
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(.white)
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(.white.opacity(0.85))
 
             Spacer(minLength: 8)
 
@@ -238,12 +240,24 @@ private struct CBLoggerToolbarView: View {
             ForEach(actions.indices, id: \.self) { index in
                 toolbarButton(actions[index].title, action: actions[index].handler)
             }
-
-            toolbarButton("HIDE", action: onToggle)
         }
         .padding(.horizontal, 8)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.clear)
+    }
+
+    private func closeButton(action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Circle()
+                .fill(Color(red: 1.0, green: 0.37, blue: 0.34)) // #FF5F57 macOS close red
+                .frame(width: 16, height: 16)
+                .overlay {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 8, weight: .bold))
+                        .foregroundStyle(.white.opacity(0.8))
+                }
+        }
+        .buttonStyle(.plain)
     }
 
     private func toolbarButton(_ title: String, action: @escaping () -> Void) -> some View {
