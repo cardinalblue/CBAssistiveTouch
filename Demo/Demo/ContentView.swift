@@ -142,6 +142,18 @@ struct ContentView: View {
                 controller.toggleConsole()
             }
             .buttonStyle(ProminentButtonStyle(tint: .indigo, textColor: .white))
+
+            HStack(spacing: 10) {
+                Button("Show Console") {
+                    controller.showConsole()
+                }
+                .buttonStyle(ProminentButtonStyle(tint: .teal, textColor: .white))
+
+                Button("Hide Console") {
+                    controller.hideConsole()
+                }
+                .buttonStyle(ProminentButtonStyle(tint: .pink, textColor: .white))
+            }
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
