@@ -187,6 +187,27 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 }
 ```
 
+## Custom Toolbar Actions (`CBLoggerWindow`)
+
+You can add custom action buttons to the logger console toolbar:
+
+```swift
+let loggerWindow = CBLoggerWindow(
+    applicationWindow: window,
+    margin: 16,
+    actions: [
+        CBLoggerWindow.Action(title: "RESET") {
+            // restore defaults
+        },
+        CBLoggerWindow.Action(title: "EXPORT") {
+            // export logs
+        }
+    ]
+)
+```
+
+Custom actions appear in the toolbar alongside the built-in close and clear buttons.
+
 ## Demo App
 
 - A demo app is included in `Demo/`.

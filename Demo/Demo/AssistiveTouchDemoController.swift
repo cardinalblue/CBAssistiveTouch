@@ -39,14 +39,22 @@ final class AssistiveTouchDemoController: ObservableObject {
                 width: max(280, window.bounds.width - 32),
                 height: 320
             ),
-            margin: 16
+            margin: 16,
+            actions: [
+                CBLoggerWindow.Action(title: "SPAM") { [weak self] in
+                    self?.spamLogs()
+                },
+                CBLoggerWindow.Action(title: "RESET") { [weak self] in
+                    self?.resetDemoState()
+                }
+            ]
         )
-        loggerWindowController.onAction = { [weak self] action in
+        loggerWindowController.onEvent = { [weak self] event in
             guard let self else {
                 return
             }
 
-            switch action {
+            switch event {
             case .toggleRequested:
                 break
 
@@ -56,9 +64,6 @@ final class AssistiveTouchDemoController: ObservableObject {
             case .clearRequested:
                 self.lastEvent = "Logs cleared"
                 self.logCount = 0
-
-            case .resetRequested:
-                self.resetDemoState()
             }
         }
 
@@ -82,7 +87,7 @@ final class AssistiveTouchDemoController: ObservableObject {
         loggerWindowController?.toggleContent()
     }
 
-    func addLog(_ event: String) {
+    func addLog(_ event: String, params: [String: Any]? = nil) {
         configureIfNeeded()
 
         let sanitized = event.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -90,14 +95,20 @@ final class AssistiveTouchDemoController: ObservableObject {
             return
         }
 
-        loggerWindowController?.log(event: sanitized)
+        loggerWindowController?.log(event: sanitized, parameters: params)
         lastEvent = sanitized
     }
 
     func logSampleEvent() {
         let event = sampleEvents[sampleIndex % sampleEvents.count]
         sampleIndex += 1
-        addLog(event)
+        addLog(event, params: ["index": sampleIndex])
+    }
+
+    func spamLogs() {
+        for i in 1...10 {
+            addLog("Spam log entry", params: ["i": i])
+        }
     }
 
     func resetDemoState() {
