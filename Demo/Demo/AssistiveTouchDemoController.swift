@@ -87,6 +87,16 @@ final class AssistiveTouchDemoController: ObservableObject {
         loggerWindowController?.toggleContent()
     }
 
+    func showConsole() {
+        configureIfNeeded()
+        loggerWindowController?.showContent()
+    }
+
+    func hideConsole() {
+        configureIfNeeded()
+        loggerWindowController?.hideContent()
+    }
+
     func addLog(_ event: String, params: [String: Any]? = nil) {
         configureIfNeeded()
 
