@@ -4,11 +4,10 @@ import SwiftUI
 import UIKit
 
 final class CBLoggerConsoleViewController: UIViewController {
-    enum Action {
+    enum Event {
         case toggleRequested
         case logCountChanged(Int)
         case clearRequested
-        case resetRequested
     }
 
     private enum Section {
@@ -20,9 +19,10 @@ final class CBLoggerConsoleViewController: UIViewController {
         let text: String
     }
 
-    var onAction: ((Action) -> Void)?
+    var onEvent: ((Event) -> Void)?
 
     private let logger: CBLogger
+    private let actions: [CBLoggerWindow.Action]
     @Published private var entries: [String] = []
     private var subscriptions = Set<AnyCancellable>()
 
@@ -33,9 +33,11 @@ final class CBLoggerConsoleViewController: UIViewController {
 
     private let toolbarHeight: CGFloat = 30
 
-    init(logger: CBLogger) {
+    init(logger: CBLogger, title: String? = nil, actions: [CBLoggerWindow.Action] = []) {
         self.logger = logger
+        self.actions = actions
         super.init(nibName: nil, bundle: nil)
+        self.title = title
     }
 
     required init?(coder: NSCoder) {
@@ -54,17 +56,6 @@ final class CBLoggerConsoleViewController: UIViewController {
         setUpBindings()
     }
 
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
-        toolBarView.frame = CGRect(x: 0, y: 0, width: view.bounds.width, height: toolbarHeight)
-        toolbarHostingController?.view.frame = toolBarView.bounds
-
-        let tableY = toolBarView.frame.maxY
-        let tableHeight = max(0, view.bounds.height - tableY)
-        tableView.frame = CGRect(x: 0, y: tableY, width: view.bounds.width, height: tableHeight)
-    }
-
     private func setUpBindings() {
         entries = logger.entries
 
@@ -72,7 +63,7 @@ final class CBLoggerConsoleViewController: UIViewController {
             guard let self else {
                 return
             }
-            onAction?(.logCountChanged(entries.count))
+            onEvent?(.logCountChanged(entries.count))
             update(entries: entries, scrollToBottom: true)
         }
         .store(in: &subscriptions)
@@ -83,39 +74,47 @@ final class CBLoggerConsoleViewController: UIViewController {
     }
 
     private func setUpTopBar() {
-        toolBarView.backgroundColor = UIColor.white.withAlphaComponent(0.12)
-        toolBarView.autoresizingMask = [
-            .flexibleWidth,
-            .flexibleLeftMargin,
-            .flexibleRightMargin,
-            .flexibleBottomMargin
-        ]
-        toolBarView.frame = CGRect(x: 0, y: 0, width: view.bounds.size.width, height: toolbarHeight)
+        toolBarView.backgroundColor = UIColor.white.withAlphaComponent(0.2)
+        toolBarView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(toolBarView)
 
+        NSLayoutConstraint.activate([
+            toolBarView.topAnchor.constraint(equalTo: view.topAnchor),
+            toolBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            toolBarView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            toolBarView.heightAnchor.constraint(equalToConstant: toolbarHeight)
+        ])
+
         let toolbarView = CBLoggerToolbarView(
+            title: title,
+            actions: actions,
             onClear: { [weak self] in self?.handleClearButtonPressed() },
-            onReset: { [weak self] in self?.handleResetButtonPressed() },
             onToggle: { [weak self] in self?.handleToggleButtonPressed() }
         )
 
         let hostingController = UIHostingController(rootView: toolbarView)
         hostingController.view.backgroundColor = .clear
-        hostingController.view.frame = toolBarView.bounds
-        hostingController.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
 
         addChild(hostingController)
         toolBarView.addSubview(hostingController.view)
         hostingController.didMove(toParent: self)
         toolbarHostingController = hostingController
+
+        NSLayoutConstraint.activate([
+            hostingController.view.topAnchor.constraint(equalTo: toolBarView.topAnchor),
+            hostingController.view.leadingAnchor.constraint(equalTo: toolBarView.leadingAnchor),
+            hostingController.view.trailingAnchor.constraint(equalTo: toolBarView.trailingAnchor),
+            hostingController.view.bottomAnchor.constraint(equalTo: toolBarView.bottomAnchor)
+        ])
     }
 
     private func setUpTableView() {
         tableView.backgroundColor = .clear
         tableView.separatorStyle = .none
-        tableView.estimatedRowHeight = 22
+        tableView.estimatedRowHeight = 16
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(CBLoggerCell.self, forCellReuseIdentifier: "Cell")
 
         tableView.contentInsetAdjustmentBehavior = .never
@@ -132,19 +131,22 @@ final class CBLoggerConsoleViewController: UIViewController {
         }
 
         view.addSubview(tableView)
-    }
 
-    private func handleResetButtonPressed() {
-        onAction?(.resetRequested)
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: toolBarView.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
 
     private func handleToggleButtonPressed() {
-        onAction?(.toggleRequested)
+        onEvent?(.toggleRequested)
     }
 
     private func handleClearButtonPressed() {
         logger.clear()
-        onAction?(.clearRequested)
+        onEvent?(.clearRequested)
     }
 
     private func update(entries: [String], scrollToBottom: Bool) {
@@ -211,9 +213,9 @@ private final class CBLoggerCell: UITableViewCell {
 
         label.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
+            label.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
             label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 8),
-            label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
+            label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
             label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -8)
         ])
     }
@@ -224,25 +226,66 @@ private final class CBLoggerCell: UITableViewCell {
 }
 
 private struct CBLoggerToolbarView: View {
+    let title: String?
+    let actions: [CBLoggerWindow.Action]
     let onClear: () -> Void
-    let onReset: () -> Void
     let onToggle: () -> Void
 
     var body: some View {
         HStack(spacing: 8) {
-            Text("Logger Console")
-                .font(.system(size: 14, weight: .semibold))
-                .foregroundStyle(.white)
+            closeButton(action: onToggle)
+            clearButton(action: onClear)
+
+            if let title {
+                Text(title)
+                    .font(.system(size: 12, weight: .semibold))
+                    .foregroundStyle(.white.opacity(0.85))
+            }
 
             Spacer(minLength: 8)
 
-            toolbarButton("CLEAR", action: onClear)
-            toolbarButton("RESET", action: onReset)
-            toolbarButton("HIDE", action: onToggle)
+            ForEach(actions.indices, id: \.self) { index in
+                toolbarButton(actions[index].title, action: actions[index].handler)
+            }
         }
         .padding(.horizontal, 8)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.clear)
+        .background(
+            Button(action: onToggle) {
+                Color.clear
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+        )
+    }
+
+    private func closeButton(action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Circle()
+                .fill(Color(red: 1.0, green: 0.37, blue: 0.34))
+                .frame(width: 16, height: 16)
+                .overlay {
+                    Image(systemName: "xmark")
+                        .font(.system(size: 8, weight: .bold))
+                        .foregroundStyle(Color(red: 0.5, green: 0.0, blue: 0.0))
+                }
+        }
+        .buttonStyle(.plain)
+        .contentShape(Rectangle())
+    }
+
+    private func clearButton(action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text("CLEAR")
+                .font(.system(size: 9, weight: .bold))
+                .foregroundStyle(Color(red: 0.6, green: 0.4, blue: 0.0))
+                .padding(.horizontal, 6)
+                .frame(height: 16)
+                .background(Color(red: 1.0, green: 0.74, blue: 0.18))
+                .clipShape(Capsule())
+        }
+        .buttonStyle(.plain)
+        .contentShape(Rectangle())
     }
 
     private func toolbarButton(_ title: String, action: @escaping () -> Void) -> some View {
