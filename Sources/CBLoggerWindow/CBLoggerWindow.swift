@@ -22,7 +22,7 @@ public final class CBLoggerWindow {
     /// ```
     public struct Action {
         public let title: String
-        public let handler: () -> Void
+        public let handler: @MainActor () -> Void
 
         public init(title: String, handler: @escaping @MainActor () -> Void) {
             self.title = title
@@ -93,6 +93,14 @@ public final class CBLoggerWindow {
 
     public func toggleContent() {
         assistiveTouch.toggleContent()
+    }
+
+    public func showContent() {
+        assistiveTouch.showContent()
+    }
+
+    public func hideContent() {
+        assistiveTouch.hideContent()
     }
 
     public func log(event: String, parameters: [String: Any]? = nil) {
