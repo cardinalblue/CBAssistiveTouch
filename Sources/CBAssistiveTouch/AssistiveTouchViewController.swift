@@ -251,38 +251,21 @@ class AssistiveTouchViewController: UIViewController {
         contentViewController.modalPresentationStyle = .custom
         contentViewController.transitioningDelegate = self
 
-        // Still collapsed at this point, so this is the button's frame.
-        let startFrame = floatingFrame
-
-        present(contentViewController, animated: false) { [unowned self] in
-            self.contentView.isHidden = true
-            contentViewController.view.frame = startFrame
-            UIView.animate(withDuration: self.layout.animationDuration) {
-                contentViewController.view.frame = self.floatingFrame
-            }
-        }
+        contentView.isHidden = true
+        present(contentViewController, animated: true)
     }
 
     func dismissContent() {
-        guard let presented = presentedViewController else {
+        guard let presented = presentedViewController, !presented.isBeingDismissed else {
             return
         }
         (presented as? AssistiveTouchContentTransitioning)?.assistiveTouchWillDismissContent()
 
-        let endFrame = clampedFrame(for: layout.assistiveTouchSize)
-        UIView.animate(
-            withDuration: layout.animationDuration,
-            animations: {
-                presented.view.frame = endFrame
-            },
-            completion: { [unowned self] _ in
-                self.contentView.frame = endFrame
-                // Unhide only once the content is gone, so the two never overlap for a frame.
-                self.dismiss(animated: false) {
-                    self.contentView.isHidden = false
-                }
-            }
-        )
+        // The content shrinks onto the button, so put the button there before it reappears.
+        contentView.frame = clampedFrame(for: layout.assistiveTouchSize)
+        dismiss(animated: true) { [unowned self] in
+            self.contentView.isHidden = false
+        }
     }
 
     // MARK: Keyboard
@@ -362,5 +345,27 @@ extension AssistiveTouchViewController: UIViewControllerTransitioningDelegate {
         )
         presentationController.frameProvider = { [unowned self] in self.floatingFrame }
         return presentationController
+    }
+
+    func animationController(
+        forPresented presented: UIViewController,
+        presenting: UIViewController,
+        source: UIViewController
+    ) -> UIViewControllerAnimatedTransitioning? {
+        makeAnimator(isPresenting: true)
+    }
+
+    func animationController(
+        forDismissed dismissed: UIViewController
+    ) -> UIViewControllerAnimatedTransitioning? {
+        makeAnimator(isPresenting: false)
+    }
+
+    private func makeAnimator(isPresenting: Bool) -> AssistiveTouchContentAnimator {
+        AssistiveTouchContentAnimator(
+            isPresenting: isPresenting,
+            duration: layout.animationDuration,
+            collapsedFrame: { [unowned self] in self.clampedFrame(for: self.layout.assistiveTouchSize) }
+        )
     }
 }
