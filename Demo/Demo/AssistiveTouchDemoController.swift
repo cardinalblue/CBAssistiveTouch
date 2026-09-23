@@ -29,16 +29,12 @@ final class AssistiveTouchDemoController: ObservableObject {
         guard loggerWindowController == nil else {
             return
         }
-        guard let window = UIApplication.shared.cbatKeyWindow else {
+        guard let windowScene = UIApplication.shared.cbatKeyWindowScene else {
             return
         }
 
         let loggerWindowController = CBLoggerWindow(
-            applicationWindow: window,
-            preferredContentSize: CGSize(
-                width: max(280, window.bounds.width - 32),
-                height: 320
-            ),
+            windowScene: windowScene,
             margin: 16,
             actions: [
                 CBLoggerWindow.Action(title: "SPAM") { [weak self] in
@@ -149,10 +145,9 @@ final class AssistiveTouchDemoController: ObservableObject {
 }
 
 private extension UIApplication {
-    var cbatKeyWindow: UIWindow? {
+    var cbatKeyWindowScene: UIWindowScene? {
         connectedScenes
             .compactMap { $0 as? UIWindowScene }
-            .flatMap(\.windows)
-            .first(where: \.isKeyWindow)
+            .first { $0.windows.contains(where: \.isKeyWindow) }
     }
 }

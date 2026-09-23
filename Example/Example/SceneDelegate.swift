@@ -11,15 +11,14 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
 
-    private lazy var assistiveTouch: AssistiveTouch = {
+    private var assistiveTouch: AssistiveTouch!
+
+    private func makeAssistiveTouch(windowScene: UIWindowScene) -> AssistiveTouch {
         let contentViewController = CBConsoleViewController()
         contentViewController.toggleHandler = { [unowned self] in
             self.assistiveTouch.toggleContent()
         }
-        let layout = DefaultAssistiveTouchLayout(applicationWindow: self.window)
-        if #available(iOS 11, *) {
-            layout.safeAreaInsets = window?.safeAreaInsets ?? .zero
-        }
+        let layout = DefaultAssistiveTouchLayout()
         layout.customView = { () -> UIView in
             let label = UILabel(frame: .zero)
             label.text = "🛠️"
@@ -28,13 +27,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }()
         layout.assistiveTouchSize = layout.customView!.bounds.size
         layout.margin = 15
-        contentViewController.preferredContentSize = CGSize(
-            width: UIScreen.main.bounds.size.width - 2 * layout.margin,
-            height: 300
-        )
+        // A zero width means "fill the safe area", so the console tracks screen size changes.
+        contentViewController.preferredContentSize = CGSize(width: 0, height: 300)
 
-        return AssistiveTouch(applicationWindow: window, layout: layout, contentViewController: contentViewController)
-    }()
+        return AssistiveTouch(windowScene: windowScene, layout: layout, contentViewController: contentViewController)
+    }
 
     func scene(
         _ scene: UIScene,
@@ -48,6 +45,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
         window = UIWindow(windowScene: windowScene)
+        assistiveTouch = makeAssistiveTouch(windowScene: windowScene)
         let rootVC = ViewController(assistiveTouch: assistiveTouch)
 
         window?.rootViewController = rootVC

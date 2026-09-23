@@ -46,16 +46,17 @@ import UIKit
 final class DebugTools {
     private var assistiveTouch: AssistiveTouch?
 
-    func install(on window: UIWindow) {
+    func install(on windowScene: UIWindowScene) {
         let contentViewController = UIViewController()
         contentViewController.view.backgroundColor = .systemBackground
-        contentViewController.preferredContentSize = CGSize(width: 320, height: 360)
+        // A zero dimension fills the available safe area and tracks screen size changes.
+        contentViewController.preferredContentSize = CGSize(width: 0, height: 360)
 
-        let layout = DefaultAssistiveTouchLayout(applicationWindow: window)
+        let layout = DefaultAssistiveTouchLayout()
         layout.margin = 16
 
         assistiveTouch = AssistiveTouch(
-            applicationWindow: window,
+            windowScene: windowScene,
             layout: layout,
             contentViewController: contentViewController
         )
@@ -71,7 +72,7 @@ Main controls:
 ## Customize the Floating View
 
 ```swift
-let layout = DefaultAssistiveTouchLayout(applicationWindow: window)
+let layout = DefaultAssistiveTouchLayout()
 let iconView = UIImageView(image: UIImage(systemName: "hammer.fill"))
 iconView.tintColor = .white
 iconView.backgroundColor = .systemBlue
@@ -130,9 +131,9 @@ final class LoggerDemoController: ObservableObject {
 
     func configureIfNeeded() {
         guard loggerWindow == nil else { return }
-        guard let window = UIApplication.shared.cbatKeyWindow else { return }
+        guard let windowScene = UIApplication.shared.cbatKeyWindowScene else { return }
 
-        let loggerWindow = CBLoggerWindow(applicationWindow: window, margin: 16)
+        let loggerWindow = CBLoggerWindow(windowScene: windowScene, margin: 16)
         loggerWindow.show()
         loggerWindow.log(event: "SwiftUI demo ready")
         self.loggerWindow = loggerWindow
@@ -148,11 +149,10 @@ final class LoggerDemoController: ObservableObject {
 }
 
 private extension UIApplication {
-    var cbatKeyWindow: UIWindow? {
+    var cbatKeyWindowScene: UIWindowScene? {
         connectedScenes
             .compactMap { $0 as? UIWindowScene }
-            .flatMap(\.windows)
-            .first(where: \.isKeyWindow)
+            .first { $0.windows.contains(where: \.isKeyWindow) }
     }
 }
 ```
@@ -179,7 +179,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window.makeKeyAndVisible()
         self.window = window
 
-        let loggerWindow = CBLoggerWindow(applicationWindow: window, margin: 16)
+        let loggerWindow = CBLoggerWindow(windowScene: windowScene, margin: 16)
         loggerWindow.show()
         loggerWindow.log(event: "UIKit demo ready")
         self.loggerWindow = loggerWindow
@@ -193,7 +193,7 @@ You can add custom action buttons to the logger console toolbar:
 
 ```swift
 let loggerWindow = CBLoggerWindow(
-    applicationWindow: window,
+    windowScene: windowScene,
     margin: 16,
     actions: [
         CBLoggerWindow.Action(title: "RESET") {

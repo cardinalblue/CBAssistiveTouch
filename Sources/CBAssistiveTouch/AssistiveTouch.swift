@@ -16,21 +16,10 @@ public class AssistiveTouch {
         window.rootViewController as! AssistiveTouchViewController
     }
 
+    /// Always spans its scene. The frame is left to UIKit so it tracks rotation, Split View and
+    /// iPhone Duo folding on its own; everything floating is positioned inside the root view.
     private lazy var window: AssistiveTouchWindow = {
-        let frame = CGRect(
-            x: 0,
-            y: 0,
-            width: layout.assistiveTouchSize.width,
-            height: layout.assistiveTouchSize.height
-        )
-        let window = { () -> AssistiveTouchWindow in
-            if let windowScene = applicationWindow?.windowScene {
-                return AssistiveTouchWindow(windowScene: windowScene)
-            }
-            return AssistiveTouchWindow(frame: frame)
-        }()
-        window.frame = frame
-        window.center = layout.assistiveTouchInitialPosition
+        let window = AssistiveTouchWindow(windowScene: windowScene)
         window.windowLevel = UIWindow.Level.init(CGFloat.greatestFiniteMagnitude)
         window.backgroundColor = .clear
         window.rootViewController = AssistiveTouchViewController(
@@ -38,24 +27,23 @@ public class AssistiveTouch {
             layout: layout,
             contentViewController: contentViewController
         )
-        window.layer.masksToBounds = true
         return window
     }()
 
-    let applicationWindow: UIWindow?
+    let windowScene: UIWindowScene
 
     private let layout: AssistiveTouchLayout
 
-    public init(applicationWindow: UIWindow?, layout: AssistiveTouchLayout, contentViewController: UIViewController?) {
-        self.applicationWindow = applicationWindow
+    public init(windowScene: UIWindowScene, layout: AssistiveTouchLayout, contentViewController: UIViewController?) {
+        self.windowScene = windowScene
         self.layout = layout
         self.contentViewController = contentViewController
     }
 
-    public convenience init(applicationWindow: UIWindow?, contentViewController: UIViewController?) {
+    public convenience init(windowScene: UIWindowScene, contentViewController: UIViewController?) {
         self.init(
-            applicationWindow: applicationWindow,
-            layout: DefaultAssistiveTouchLayout(applicationWindow: applicationWindow),
+            windowScene: windowScene,
+            layout: DefaultAssistiveTouchLayout(),
             contentViewController: contentViewController
         )
     }

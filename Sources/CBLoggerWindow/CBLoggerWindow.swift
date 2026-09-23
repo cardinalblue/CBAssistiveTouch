@@ -18,7 +18,7 @@ public final class CBLoggerWindow {
     /// let resetAction = CBLoggerWindow.Action(title: "RESET") {
     ///     // restore defaults
     /// }
-    /// let window = CBLoggerWindow(applicationWindow: appWindow, actions: [resetAction])
+    /// let window = CBLoggerWindow(windowScene: scene, actions: [resetAction])
     /// ```
     public struct Action {
         public let title: String
@@ -38,7 +38,7 @@ public final class CBLoggerWindow {
     private let consoleViewController: CBLoggerConsoleViewController
 
     public init(
-        applicationWindow: UIWindow,
+        windowScene: UIWindowScene,
         preferredContentSize: CGSize? = nil,
         margin: CGFloat = 16,
         floatingToolView: UIView? = nil,
@@ -51,13 +51,11 @@ public final class CBLoggerWindow {
             logger: resolvedLogger,
             actions: actions
         )
-        consoleViewController.preferredContentSize = preferredContentSize ?? CGSize(
-            width: max(280, applicationWindow.bounds.width - 32),
-            height: 320
-        )
+        // A zero width means "fill the safe area", so the console tracks screen size changes.
+        consoleViewController.preferredContentSize = preferredContentSize ?? CGSize(width: 0, height: 320)
         self.consoleViewController = consoleViewController
 
-        let layout = DefaultAssistiveTouchLayout(applicationWindow: applicationWindow)
+        let layout = DefaultAssistiveTouchLayout()
         layout.margin = margin
         layout.customView = floatingToolView ?? Self.makeDefaultFloatingToolView()
         if let customView = layout.customView {
@@ -65,7 +63,7 @@ public final class CBLoggerWindow {
         }
 
         self.assistiveTouch = AssistiveTouch(
-            applicationWindow: applicationWindow,
+            windowScene: windowScene,
             layout: layout,
             contentViewController: consoleViewController
         )
