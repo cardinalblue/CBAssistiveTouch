@@ -16,7 +16,7 @@ This repository currently exposes two Swift Package products:
 
 ## Requirements
 
-- iOS 15.0+
+- iOS 18.0+
 - Swift 5.10+
 
 ## Installation (Swift Package Manager)

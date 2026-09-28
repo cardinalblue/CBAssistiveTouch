@@ -3,7 +3,7 @@ import ProjectDescriptionHelpers
 
 let marketingVersion = "1.0.0"
 let currentProjectVersion = "1"
-let deploymentTargets = DeploymentTargets.iOS("17.0")
+let deploymentTargets = DeploymentTargets.iOS("18.0")
 let destinations: Destinations = [.iPhone, .iPad]
 
 let mainTarget = Target.target(

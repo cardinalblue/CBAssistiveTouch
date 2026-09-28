@@ -97,10 +97,7 @@ final class CBLoggerConsoleViewController: UIViewController {
         hostingController.view.translatesAutoresizingMaskIntoConstraints = false
         // Dragged under the status bar, the inherited top inset exceeds the 30pt toolbar and
         // SwiftUI can't lay out inside it, so don't forward the safe area at all.
-        // ponytail: iOS 15–16.4 still inherit it; handle when those matter.
-        if #available(iOS 16.4, *) {
-            hostingController.safeAreaRegions = []
-        }
+        hostingController.safeAreaRegions = []
 
         addChild(hostingController)
         toolBarView.addSubview(hostingController.view)
