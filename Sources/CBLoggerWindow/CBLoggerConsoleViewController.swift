@@ -95,6 +95,12 @@ final class CBLoggerConsoleViewController: UIViewController {
         let hostingController = UIHostingController(rootView: toolbarView)
         hostingController.view.backgroundColor = .clear
         hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        // Dragged under the status bar, the inherited top inset exceeds the 30pt toolbar and
+        // SwiftUI can't lay out inside it, so don't forward the safe area at all.
+        // ponytail: iOS 15–16.4 still inherit it; handle when those matter.
+        if #available(iOS 16.4, *) {
+            hostingController.safeAreaRegions = []
+        }
 
         addChild(hostingController)
         toolBarView.addSubview(hostingController.view)
@@ -118,6 +124,7 @@ final class CBLoggerConsoleViewController: UIViewController {
         tableView.register(CBLoggerCell.self, forCellReuseIdentifier: "Cell")
 
         tableView.contentInsetAdjustmentBehavior = .never
+        tableView.insetsContentViewsToSafeArea = false
 
         dataSource = UITableViewDiffableDataSource<Section, LogItem>(
             tableView: tableView
@@ -250,13 +257,8 @@ private struct CBLoggerToolbarView: View {
         }
         .padding(.horizontal, 8)
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(
-            Button(action: onToggle) {
-                Color.clear
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-        )
+        .contentShape(Rectangle())
+        .onTapGesture(perform: onToggle)
     }
 
     private func closeButton(action: @escaping () -> Void) -> some View {
