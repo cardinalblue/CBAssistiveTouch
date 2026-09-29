@@ -9,7 +9,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @EnvironmentObject private var controller: AssistiveTouchDemoController
+    @State private var controller = AssistiveTouchDemoController()
     @State private var customEvent = ""
 
     var body: some View {
@@ -37,9 +37,7 @@ struct ContentView: View {
                 .padding(.vertical, 24)
             }
         }
-        .onAppear {
-            controller.configureIfNeeded()
-        }
+        .background(WindowSceneReader { controller.configureIfNeeded(windowScene: $0) })
     }
 
     private var header: some View {
@@ -186,7 +184,6 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .environmentObject(AssistiveTouchDemoController())
 }
 
 private struct ProminentButtonStyle: ButtonStyle {
@@ -203,5 +200,29 @@ private struct ProminentButtonStyle: ButtonStyle {
             .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             .scaleEffect(configuration.isPressed ? 0.98 : 1)
             .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
+    }
+}
+
+/// Hands back the window scene this view lives in, so each scene configures its own assistive touch.
+private struct WindowSceneReader: UIViewRepresentable {
+    let onWindowScene: (UIWindowScene) -> Void
+
+    func makeUIView(context: Context) -> ReaderView {
+        let view = ReaderView()
+        view.onWindowScene = onWindowScene
+        return view
+    }
+
+    func updateUIView(_ uiView: ReaderView, context: Context) {}
+
+    final class ReaderView: UIView {
+        var onWindowScene: ((UIWindowScene) -> Void)?
+
+        override func didMoveToWindow() {
+            super.didMoveToWindow()
+            if let windowScene = window?.windowScene {
+                onWindowScene?(windowScene)
+            }
+        }
     }
 }

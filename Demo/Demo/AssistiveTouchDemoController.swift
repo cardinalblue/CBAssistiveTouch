@@ -7,16 +7,18 @@
 //
 
 import CBLoggerWindow
+import Observation
 import UIKit
 
 @MainActor
-final class AssistiveTouchDemoController: ObservableObject {
-    @Published private(set) var isAssistiveTouchVisible = false
-    @Published private(set) var logCount = 0
-    @Published private(set) var lastEvent = "No events yet"
+@Observable
+final class AssistiveTouchDemoController {
+    private(set) var isAssistiveTouchVisible = false
+    private(set) var logCount = 0
+    private(set) var lastEvent = "No events yet"
 
-    private var loggerWindowController: CBLoggerWindow?
-    private var sampleIndex = 0
+    @ObservationIgnored private var loggerWindowController: CBLoggerWindow?
+    @ObservationIgnored private var sampleIndex = 0
 
     private let sampleEvents = [
         "Debug menu opened",
@@ -25,11 +27,8 @@ final class AssistiveTouchDemoController: ObservableObject {
         "Premium flag enabled"
     ]
 
-    func configureIfNeeded() {
+    func configureIfNeeded(windowScene: UIWindowScene) {
         guard loggerWindowController == nil else {
-            return
-        }
-        guard let windowScene = UIApplication.shared.cbatKeyWindowScene else {
             return
         }
 
@@ -70,7 +69,6 @@ final class AssistiveTouchDemoController: ObservableObject {
     }
 
     func toggleAssistiveTouch() {
-        configureIfNeeded()
         guard let loggerWindowController else {
             return
         }
@@ -79,23 +77,18 @@ final class AssistiveTouchDemoController: ObservableObject {
     }
 
     func toggleConsole() {
-        configureIfNeeded()
         loggerWindowController?.toggleContent()
     }
 
     func showConsole() {
-        configureIfNeeded()
         loggerWindowController?.showContent()
     }
 
     func hideConsole() {
-        configureIfNeeded()
         loggerWindowController?.hideContent()
     }
 
     func addLog(_ event: String, params: [String: Any]? = nil) {
-        configureIfNeeded()
-
         let sanitized = event.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !sanitized.isEmpty else {
             return
@@ -118,7 +111,6 @@ final class AssistiveTouchDemoController: ObservableObject {
     }
 
     func resetDemoState() {
-        configureIfNeeded()
         sampleIndex = 0
         appendInitialLogsIfNeeded(forceReplace: true)
         lastEvent = "Demo reset"
@@ -141,13 +133,5 @@ final class AssistiveTouchDemoController: ObservableObject {
         }
         initialLogs.forEach { loggerWindowController?.log(event: $0) }
         lastEvent = initialLogs.last ?? lastEvent
-    }
-}
-
-private extension UIApplication {
-    var cbatKeyWindowScene: UIWindowScene? {
-        connectedScenes
-            .compactMap { $0 as? UIWindowScene }
-            .first { $0.windows.contains(where: \.isKeyWindow) }
     }
 }
