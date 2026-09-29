@@ -35,7 +35,7 @@ class AssistiveTouchViewController: UIViewController {
     /// Where to move back to once the keyboard hides.
     private var lastFloatingCenter: CGPoint?
 
-    private var lastLayoutSize: CGSize = .zero
+    private var lastBounding: CGRect?
 
     private lazy var contentView: UIView = {
         let view = UIView(frame: CGRect(origin: .zero, size: layout.assistiveTouchSize))
@@ -96,16 +96,18 @@ class AssistiveTouchViewController: UIViewController {
         setupGestures()
     }
 
-    /// Reacts to every screen size change — rotation, Split View, iPhone Duo folding — without
-    /// looking at interface orientation, which the inner display ignores anyway.
+    /// Reacts to every screen size and safe area change — rotation, Split View, iPhone Duo folding —
+    /// without looking at interface orientation, which the inner display ignores anyway.
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        guard view.bounds.size != lastLayoutSize else {
+        // Compare the whole bounding box, not just the size: when the scene moves between iPhone Duo
+        // displays the safe area settles a pass after the size does, and is briefly wrong in between.
+        guard !view.bounds.isEmpty, bounding != lastBounding else {
             return
         }
-        let isFirstLayout = lastLayoutSize == .zero
-        lastLayoutSize = view.bounds.size
+        let isFirstLayout = lastBounding == nil
+        lastBounding = bounding
 
         if isFirstLayout {
             let size = layout.assistiveTouchSize
