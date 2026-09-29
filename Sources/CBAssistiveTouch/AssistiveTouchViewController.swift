@@ -35,6 +35,10 @@ class AssistiveTouchViewController: UIViewController {
     /// Where to move back to once the keyboard hides.
     private var lastFloatingCenter: CGPoint?
 
+    /// Where the floating element sits relative to `bounding` — see `anchor(for:size:bounding:)`.
+    /// Only the user moves it; bounding changes re-place the element from it, so it keeps its side.
+    private var anchor = CGPoint(x: 1, y: 0.5)
+
     private var lastBounding: CGRect?
 
     private lazy var contentView: UIView = {
@@ -103,18 +107,14 @@ class AssistiveTouchViewController: UIViewController {
 
         // Compare the whole bounding box, not just the size: when the scene moves between iPhone Duo
         // displays the safe area settles a pass after the size does, and is briefly wrong in between.
-        guard !view.bounds.isEmpty, bounding != lastBounding else {
+        guard !bounding.isEmpty, bounding != lastBounding else {
             return
         }
-        let isFirstLayout = lastBounding == nil
         lastBounding = bounding
 
-        if isFirstLayout {
-            let size = layout.assistiveTouchSize
-            floatingCenter = CGPoint(x: bounding.maxX - size.width / 2, y: bounding.midY)
-        }
-
-        // Snap back inside the new bounding box and make that the new source of truth.
+        // Re-place from the anchor, not the old absolute center: an absolute center lands mid-screen
+        // on a wider display, and a transient bounding box would push it to whichever side is nearest.
+        floatingCenter = Self.center(for: anchor, size: layout.assistiveTouchSize, bounding: bounding)
         let frame = floatingFrame
         floatingCenter = CGPoint(x: frame.midX, y: frame.midY)
         lastFloatingCenter = nil
@@ -182,6 +182,24 @@ class AssistiveTouchViewController: UIViewController {
         return manipulator.itemFrame
     }
 
+    /// `center` as a fraction of the area a `size` item's center can move in: x = 1 is the right
+    /// edge, y = 0 the top. Unlike a point, it means the same side on any bounding box.
+    static func anchor(for center: CGPoint, size: CGSize, bounding: CGRect) -> CGPoint {
+        let range = bounding.insetBy(dx: size.width / 2, dy: size.height / 2)
+        return CGPoint(
+            x: range.width > 0 ? (center.x - range.minX) / range.width : 0.5,
+            y: range.height > 0 ? (center.y - range.minY) / range.height : 0.5
+        )
+    }
+
+    static func center(for anchor: CGPoint, size: CGSize, bounding: CGRect) -> CGPoint {
+        let range = bounding.insetBy(dx: size.width / 2, dy: size.height / 2)
+        guard !range.isNull else {
+            return CGPoint(x: bounding.midX, y: bounding.midY)
+        }
+        return CGPoint(x: range.minX + anchor.x * range.width, y: range.minY + anchor.y * range.height)
+    }
+
     private var floatingFrame: CGRect {
         clampedFrame(for: contentSize)
     }
@@ -222,6 +240,11 @@ class AssistiveTouchViewController: UIViewController {
                 completion: { _ in
                     self.manipulator = nil
                     self.lastFloatingCenter = nil
+                    self.anchor = Self.anchor(
+                        for: self.floatingCenter,
+                        size: self.layout.assistiveTouchSize,
+                        bounding: self.bounding
+                    )
                 }
             )
 
