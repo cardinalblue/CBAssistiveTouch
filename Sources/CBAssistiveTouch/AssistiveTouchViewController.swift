@@ -288,8 +288,8 @@ class AssistiveTouchViewController: UIViewController {
 
         // The content shrinks onto the button, so put the button there before it reappears.
         contentView.frame = clampedFrame(for: layout.assistiveTouchSize)
-        dismiss(animated: true) { [unowned self] in
-            self.contentView.isHidden = false
+        dismiss(animated: true) { [contentView] in
+            contentView.isHidden = false
         }
     }
 
