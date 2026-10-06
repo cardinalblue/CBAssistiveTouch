@@ -35,7 +35,7 @@ public class AssistiveTouch {
     private let layout: AssistiveTouchLayout
 
     /// `contentViewController.preferredContentSize` sizes the presented content. A zero width or
-    /// height fills the safe area in that dimension and tracks screen size changes.
+    /// height fills the available bounds in that dimension and tracks screen size changes.
     public init(windowScene: UIWindowScene, layout: AssistiveTouchLayout, contentViewController: UIViewController?) {
         self.windowScene = windowScene
         self.layout = layout
