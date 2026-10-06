@@ -59,7 +59,7 @@ extension CGRect {
         var newRect = self
         let t = translation(to: rect, edge: edge)
         newRect.origin.x += t.x
-        newRect.origin.x += t.y
+        newRect.origin.y += t.y
         return newRect
     }
 

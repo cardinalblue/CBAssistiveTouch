@@ -104,8 +104,17 @@ extension Project {
         .extendingDefault(with: [
             "CFBundleShortVersionString": Plist.Value(stringLiteral: marketingVersion),
             "CFBundleVersion": Plist.Value(stringLiteral: currentProjectVersion),
-            "UIRequiresFullScreen": true,
+            // iPhone and the iPhone Duo *outer* display stay portrait. The inner display ignores
+            // this key entirely and hands us both orientations, so the layout still has to work
+            // in landscape — never read interface orientation to decide it.
             "UISupportedInterfaceOrientations": ["UIInterfaceOrientationPortrait"],
+            // UISupportedInterfaceOrientations only applies to iPhone; iPad needs its own key.
+            "UISupportedInterfaceOrientations~ipad": [
+                "UIInterfaceOrientationPortrait",
+                "UIInterfaceOrientationPortraitUpsideDown",
+                "UIInterfaceOrientationLandscapeLeft",
+                "UIInterfaceOrientationLandscapeRight"
+            ],
             "FirebaseAppDelegateProxyEnabled": false,
             "UILaunchStoryboardName": "LaunchScreen.storyboard",
             "UIAppFonts": [

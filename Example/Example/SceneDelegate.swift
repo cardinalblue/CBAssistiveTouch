@@ -11,15 +11,14 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
 
-    private lazy var assistiveTouch: AssistiveTouch = {
+    private var assistiveTouch: AssistiveTouch!
+
+    private func makeAssistiveTouch(windowScene: UIWindowScene) -> AssistiveTouch {
         let contentViewController = CBConsoleViewController()
         contentViewController.toggleHandler = { [unowned self] in
             self.assistiveTouch.toggleContent()
         }
-        let layout = DefaultAssistiveTouchLayout(applicationWindow: self.window)
-        if #available(iOS 11, *) {
-            layout.safeAreaInsets = window?.safeAreaInsets ?? .zero
-        }
+        let layout = DefaultAssistiveTouchLayout()
         layout.customView = { () -> UIView in
             let label = UILabel(frame: .zero)
             label.text = "🛠️"
@@ -28,26 +27,21 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }()
         layout.assistiveTouchSize = layout.customView!.bounds.size
         layout.margin = 15
-        contentViewController.preferredContentSize = CGSize(
-            width: UIScreen.main.bounds.size.width - 2 * layout.margin,
-            height: 300
-        )
+        // A zero width means "fill the safe area", so the console tracks screen size changes.
+        contentViewController.preferredContentSize = CGSize(width: 0, height: 300)
 
-        return AssistiveTouch(applicationWindow: window, layout: layout, contentViewController: contentViewController)
-    }()
+        return AssistiveTouch(windowScene: windowScene, layout: layout, contentViewController: contentViewController)
+    }
 
     func scene(
         _ scene: UIScene,
         willConnectTo session: UISceneSession,
         options connectionOptions: UIScene.ConnectionOptions
     ) {
-        // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
-        // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
-        // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-
         guard let windowScene = (scene as? UIWindowScene) else { return }
 
         window = UIWindow(windowScene: windowScene)
+        assistiveTouch = makeAssistiveTouch(windowScene: windowScene)
         let rootVC = ViewController(assistiveTouch: assistiveTouch)
 
         window?.rootViewController = rootVC
@@ -55,10 +49,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
-        // Called as the scene is being released by the system.
-        // This occurs shortly after the scene enters the background, or when its session is discarded.
-        // Release any resources associated with this scene that can be re-created the next time the scene connects.
-        // The scene may re-connect later, as its session was not necessarily discarded (see `application:didDiscardSceneSessions` instead).
     }
 
     func sceneDidBecomeActive(_ scene: UIScene) {
@@ -82,4 +72,3 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // to restore the scene back to its current state.
     }
 }
-
