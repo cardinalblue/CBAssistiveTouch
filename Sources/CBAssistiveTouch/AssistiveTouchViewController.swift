@@ -39,7 +39,12 @@ class AssistiveTouchViewController: UIViewController {
     /// Only the user moves it; bounding changes re-place the element from it, so it keeps its side.
     private var anchor = CGPoint(x: 1, y: 0.5)
 
-    private var lastBounding: CGRect?
+    private struct LayoutEnvironment: Equatable {
+        let bounding: CGRect
+        let occlusionFrames: [CGRect]
+    }
+
+    private var lastLayoutEnvironment: LayoutEnvironment?
 
     private lazy var contentView: UIView = {
         let view = UIView(frame: CGRect(origin: .zero, size: layout.assistiveTouchSize))
@@ -105,20 +110,29 @@ class AssistiveTouchViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        // Compare the whole bounding box, not just the size: when the scene moves between iPhone Duo
-        // displays the safe area settles a pass after the size does, and is briefly wrong in between.
-        guard !bounding.isEmpty, bounding != lastBounding else {
+        let bounding = bounding
+        let occlusionFrames = activeOcclusionFrames(in: bounding)
+        let environment = LayoutEnvironment(bounding: bounding, occlusionFrames: occlusionFrames)
+
+        // Compare the whole environment, not just the size: when the scene moves between iPhone Duo
+        // displays the safe area and reserved regions can settle after the size does.
+        guard !bounding.isEmpty, environment != lastLayoutEnvironment else {
             return
         }
-        lastBounding = bounding
+        lastLayoutEnvironment = environment
 
         // Re-place from the anchor, not the old absolute center: an absolute center lands mid-screen
         // on a wider display, and a transient bounding box would push it to whichever side is nearest.
         floatingCenter = Self.center(for: anchor, size: layout.assistiveTouchSize, bounding: bounding)
-        let frame = floatingFrame
+        let frame = Self.resolvedFrame(
+            for: layout.assistiveTouchSize,
+            center: floatingCenter,
+            bounding: bounding,
+            avoiding: occlusionFrames
+        )
         floatingCenter = CGPoint(x: frame.midX, y: frame.midY)
         lastFloatingCenter = nil
-        contentView.frame = clampedFrame(for: layout.assistiveTouchSize)
+        contentView.frame = frame
     }
 
     private func setupGestures() {
@@ -132,9 +146,25 @@ class AssistiveTouchViewController: UIViewController {
     // MARK: Geometry
 
     /// Area the floating element is allowed to occupy, in this view controller's coordinate space.
+    /// Vertical edges respect the safe area; horizontal edges use the full container so asymmetric
+    /// safe-area insets, such as the iPhone Duo camera region, do not leave a large empty column.
     private var bounding: CGRect {
-        view.bounds.inset(by: view.safeAreaInsets)
-                   .insetBy(dx: layout.margin, dy: layout.margin)
+        Self.boundingRect(
+            in: view.bounds,
+            safeAreaInsets: view.safeAreaInsets,
+            margin: layout.margin
+        )
+    }
+
+    static func boundingRect(in bounds: CGRect, safeAreaInsets: UIEdgeInsets, margin: CGFloat) -> CGRect {
+        bounds.inset(
+            by: UIEdgeInsets(
+                top: safeAreaInsets.top + margin,
+                left: margin,
+                bottom: safeAreaInsets.bottom + margin,
+                right: margin
+            )
+        )
     }
 
     private var contentSize: CGSize {
@@ -182,6 +212,123 @@ class AssistiveTouchViewController: UIViewController {
         return manipulator.itemFrame
     }
 
+    /// Returns an edge-aligned frame that avoids active system occlusions whenever possible.
+    /// If every same-size placement overlaps, the least-overlapping placement wins.
+    private func resolvedFrame(for size: CGSize) -> CGRect {
+        let bounding = bounding
+        return Self.resolvedFrame(
+            for: size,
+            center: floatingCenter,
+            bounding: bounding,
+            avoiding: activeOcclusionFrames(in: bounding)
+        )
+    }
+
+    static func resolvedFrame(
+        for size: CGSize,
+        center: CGPoint,
+        bounding: CGRect,
+        avoiding occlusionFrames: [CGRect]
+    ) -> CGRect {
+        let clampedFrame = clampedFrame(for: size, center: center, bounding: bounding)
+        let occlusionFrames = occlusionFrames.filter { !$0.isEmpty && $0.intersects(bounding) }
+        guard !occlusionFrames.isEmpty, size.width <= bounding.width, size.height <= bounding.height else {
+            return clampedFrame
+        }
+
+        let minimumX = bounding.minX
+        let maximumX = bounding.maxX - size.width
+        let minimumY = bounding.minY
+        let maximumY = bounding.maxY - size.height
+        let epsilon: CGFloat = 0.001
+
+        func uniqueClamped(_ values: [CGFloat], minimum: CGFloat, maximum: CGFloat) -> [CGFloat] {
+            values.reduce(into: []) { result, value in
+                guard value.isFinite else {
+                    return
+                }
+                let clampedValue = min(max(value, minimum), maximum)
+                if !result.contains(where: { abs($0 - clampedValue) <= epsilon }) {
+                    result.append(clampedValue)
+                }
+            }
+        }
+
+        let xOrigins = uniqueClamped(
+            [clampedFrame.minX, minimumX, maximumX]
+                + occlusionFrames.flatMap { [$0.minX - size.width, $0.maxX] },
+            minimum: minimumX,
+            maximum: maximumX
+        )
+        let yOrigins = uniqueClamped(
+            [clampedFrame.minY, minimumY, maximumY]
+                + occlusionFrames.flatMap { [$0.minY - size.height, $0.maxY] },
+            minimum: minimumY,
+            maximum: maximumY
+        )
+
+        func overlapArea(of frame: CGRect) -> CGFloat {
+            occlusionFrames.reduce(0) { area, occlusionFrame in
+                let intersection = frame.intersection(occlusionFrame)
+                guard !intersection.isNull else {
+                    return area
+                }
+                return area + max(0, intersection.width) * max(0, intersection.height)
+            }
+        }
+
+        func movement(of frame: CGRect) -> CGFloat {
+            let x = frame.midX - clampedFrame.midX
+            let y = frame.midY - clampedFrame.midY
+            return x * x + y * y
+        }
+
+        func isBetter(_ candidate: CGRect, than current: CGRect) -> Bool {
+            let candidateScore = (overlapArea(of: candidate), movement(of: candidate))
+            let currentScore = (overlapArea(of: current), movement(of: current))
+            if abs(candidateScore.0 - currentScore.0) > epsilon {
+                return candidateScore.0 < currentScore.0
+            }
+            if abs(candidateScore.1 - currentScore.1) > epsilon {
+                return candidateScore.1 < currentScore.1
+            }
+            if abs(candidate.minY - current.minY) > epsilon {
+                return candidate.minY < current.minY
+            }
+            return candidate.minX < current.minX
+        }
+
+        var bestFrame = clampedFrame
+        for x in xOrigins {
+            for y in yOrigins {
+                let candidate = CGRect(origin: CGPoint(x: x, y: y), size: size)
+                let touchesOuterEdge = abs(candidate.minX - bounding.minX) <= epsilon
+                    || abs(candidate.maxX - bounding.maxX) <= epsilon
+                    || abs(candidate.minY - bounding.minY) <= epsilon
+                    || abs(candidate.maxY - bounding.maxY) <= epsilon
+                guard touchesOuterEdge else {
+                    continue
+                }
+                if isBetter(candidate, than: bestFrame) {
+                    bestFrame = candidate
+                }
+            }
+        }
+        return bestFrame
+    }
+
+    private func activeOcclusionFrames(in bounding: CGRect) -> [CGRect] {
+        guard #available(iOS 27.1, *) else {
+            return []
+        }
+        return view.reservedRegions(kind: .occlusion)
+            .map(\.frame)
+            .filter { !$0.isEmpty && $0.intersects(bounding) }
+            .sorted {
+                ($0.minY, $0.minX, $0.maxY, $0.maxX) < ($1.minY, $1.minX, $1.maxY, $1.maxX)
+            }
+    }
+
     /// `center` as a fraction of the area a `size` item's center can move in: x = 1 is the right
     /// edge, y = 0 the top. Unlike a point, it means the same side on any bounding box.
     static func anchor(for center: CGPoint, size: CGSize, bounding: CGRect) -> CGPoint {
@@ -201,7 +348,7 @@ class AssistiveTouchViewController: UIViewController {
     }
 
     private var floatingFrame: CGRect {
-        clampedFrame(for: contentSize)
+        resolvedFrame(for: contentSize)
     }
 
     /// The view currently representing the floating element: the presented content, or the button.
@@ -236,6 +383,9 @@ class AssistiveTouchViewController: UIViewController {
                 withDuration: layout.animationDuration,
                 animations: {
                     self.manipulator?.touchesEnded([touch])
+                    let frame = self.resolvedFrame(for: self.contentSize)
+                    self.floatingCenter = CGPoint(x: frame.midX, y: frame.midY)
+                    self.applyFloatingFrame(frame)
                 },
                 completion: { _ in
                     self.manipulator = nil
@@ -287,7 +437,7 @@ class AssistiveTouchViewController: UIViewController {
         (presented as? AssistiveTouchContentTransitioning)?.assistiveTouchWillDismissContent()
 
         // The content shrinks onto the button, so put the button there before it reappears.
-        contentView.frame = clampedFrame(for: layout.assistiveTouchSize)
+        contentView.frame = resolvedFrame(for: layout.assistiveTouchSize)
         dismiss(animated: true) { [contentView] in
             contentView.isHidden = false
         }
@@ -390,7 +540,7 @@ extension AssistiveTouchViewController: UIViewControllerTransitioningDelegate {
         AssistiveTouchContentAnimator(
             isPresenting: isPresenting,
             duration: layout.animationDuration,
-            collapsedFrame: { [unowned self] in self.clampedFrame(for: self.layout.assistiveTouchSize) }
+            collapsedFrame: { [unowned self] in self.resolvedFrame(for: self.layout.assistiveTouchSize) }
         )
     }
 }
