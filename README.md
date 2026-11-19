@@ -49,7 +49,7 @@ final class DebugTools {
     func install(on windowScene: UIWindowScene) {
         let contentViewController = UIViewController()
         contentViewController.view.backgroundColor = .systemBackground
-        // A zero dimension fills the available safe area and tracks screen size changes.
+        // A zero dimension fills the available bounds and tracks screen size changes.
         contentViewController.preferredContentSize = CGSize(width: 0, height: 360)
 
         let layout = DefaultAssistiveTouchLayout()
@@ -87,6 +87,16 @@ layout.margin = 16
 ```
 
 You can also provide your own `AssistiveTouchLayout` implementation if the default layout is not enough.
+
+## Layout Behavior
+
+The floating button and presented content stay within the vertical safe area while using the full
+horizontal container bounds. On iOS 27.1 and later, they also avoid active system
+`UIView.ReservedRegion.Kind.occlusion` regions after layout changes and when a drag ends. Inactive
+and `.division` regions are intentionally ignored. Reserved-region frames already include their
+system-provided margins, so CBAssistiveTouch does not add another inset. The floating element keeps
+its configured size; if no conflict-free edge placement exists, the least-overlapping placement is
+used.
 
 ## Touch Passthrough in Presented Content
 

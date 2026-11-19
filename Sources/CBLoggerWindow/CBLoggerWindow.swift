@@ -38,7 +38,7 @@ public final class CBLoggerWindow {
     private let consoleViewController: CBLoggerConsoleViewController
 
     /// - Parameter preferredContentSize: Size of the console when shown. A zero width or height
-    ///   fills the safe area in that dimension and tracks screen size changes. Defaults to full
+    ///   fills the available bounds in that dimension and tracks screen size changes. Defaults to full
     ///   width, 320 pt tall.
     public init(
         windowScene: UIWindowScene,
@@ -54,7 +54,7 @@ public final class CBLoggerWindow {
             logger: resolvedLogger,
             actions: actions
         )
-        // A zero width means "fill the safe area", so the console tracks screen size changes.
+        // A zero width means "fill the available bounds", so the console tracks screen size changes.
         consoleViewController.preferredContentSize = preferredContentSize ?? CGSize(width: 0, height: 320)
         self.consoleViewController = consoleViewController
 
